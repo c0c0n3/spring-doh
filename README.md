@@ -1,7 +1,7 @@
 Spring...D'oh!
 ==============
 
-Simple-minded project to get a feel of developing with [Spring 4][spring].
+Brain-dead app to get a feel of developing with [Spring 4][spring].
 Some background reading material: chapters 1 through 4 and chapter 21 of [Spring
 in Action][spring-in-action]. (Or whatever other intro you fancy.)
 
