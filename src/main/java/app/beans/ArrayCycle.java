@@ -1,5 +1,6 @@
 package app.beans;
 
+
 /**
  * Implements {@link Cycle} to iterate over an array.
  */
@@ -25,4 +26,9 @@ public class ArrayCycle<T> implements Cycle<T> {
     // NOTE: elements == null      => NullPointerException
     //       elements.length == 0  => ArithmeticException
 
+	@Override
+	public Cycle.Position where() {
+		return position <= 0 ? Cycle.Position.Start : Cycle.Position.OnWay;
+	}
+    
 }
