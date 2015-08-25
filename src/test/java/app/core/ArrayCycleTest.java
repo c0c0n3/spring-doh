@@ -1,4 +1,4 @@
-package app.beans;
+package app.core;
 
 import static org.junit.Assert.*;
 import static util.Arrayz.array;
@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 
 import util.Arrayz;
 import util.Pair;
-import app.beans.Cycle.Position;
+import app.core.Cycle.Position;
 
 @RunWith(Theories.class)
 public class ArrayCycleTest {

@@ -1,4 +1,4 @@
-package app.beans;
+package app.core;
 
 /**
  * Implements {@link Cycle} to iterate over an array.

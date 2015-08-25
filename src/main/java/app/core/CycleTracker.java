@@ -1,4 +1,4 @@
-package app.beans;
+package app.core;
 
 import static java.util.Objects.requireNonNull;
 
