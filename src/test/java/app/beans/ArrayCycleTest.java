@@ -1,47 +1,84 @@
 package app.beans;
 
-import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static util.Arrayz.array;
+
+import java.util.stream.IntStream;
 
 import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
+import org.junit.runner.RunWith;
 
+import util.Arrayz;
+import util.Pair;
 import app.beans.Cycle.Position;
 
+@RunWith(Theories.class)
 public class ArrayCycleTest {
 
-    public static Cycle<Integer> newCycle(Integer... ts) {
+    @DataPoints
+    public static Integer[][] cycles = new Integer[][] {
+        array(10), array(10, 11), array(10, 11, 12, 13, 14)
+    };
+    
+    @DataPoints
+    public static Integer[] cycleRepeats = array(1, 2, 3);
+    
+    public static Cycle<Integer> newCycle(Integer...ts) {
         return new ArrayCycle<>(ts);
     }
-
-    private void assertCycleUsingNext(Integer... ts) {
+    
+    private void assertCycleUsingNext(int repeat, Integer...ts) {
         Cycle<Integer> target = newCycle(ts);
-        for (int k = 0; k < 3; ++k) {
-            for (Integer t : ts) {
-                assertThat(target.next(), is(t));
-            }
-        }
+        
+        Integer[] expected = Arrayz.op(Integer[]::new).cycle(repeat, ts);
+        Integer[] actual = Cycles.collect(repeat * ts.length, target)
+                          .toArray(new Integer[0]);
+        
+        assertArrayEquals(expected, actual);
     }
-
-    private void assertCycleUsingAdvance(Integer... ts) {
+    
+    private Pair<Integer, Position>[] buildExpectedForAdvance(Integer...ts) {
+        Position[] ps = IntStream
+                       .rangeClosed(0, ts.length)
+                       .boxed()
+                       .map(k -> k == 0 || k == ts.length ? 
+                               Position.Start : Position.OnWay)
+                       .toArray(Position[]::new);
+        
+        Integer[] rolledOverCycle = new Integer[ts.length + 1];
+        System.arraycopy(ts, 0, rolledOverCycle, 0, ts.length);
+        rolledOverCycle[ts.length] = ts[0];
+        
+        return Arrayz.zip(rolledOverCycle, ps);
+        
+        // NB we collect: start > ... > last > start
+    }
+    
+    private Pair<Integer, Position>[] collectAdvance(Integer...ts) {
         Cycle<Integer> target = newCycle(ts);
-
-        Pair<Integer, Position> next = target.advance();
-        assertThat(next.fst(), is(ts[0]));
-        assertThat(next.snd(), is(Position.Start));
-
-        for (int k = 1; k < ts.length; ++k) {
-            next = target.advance();
-            assertThat(next.fst(), is(ts[k]));
-            assertThat(next.snd(), is(Position.OnWay));
+        Pair<Integer, Position>[] ps = Arrayz.newPairs(ts.length + 1);
+        
+        for (int k = 0; k < ps.length; ++k) {
+            ps[k] = target.advance();
         }
-
-        next = target.advance();
-        assertThat(next.fst(), is(ts[0]));
-        assertThat(next.snd(), is(Position.Start));
+        return ps;
+        
+        // NB we collect: start > ... > last > start
     }
+    
+    private void assertCycleUsingAdvance(Integer...ts) {
+        Pair<Integer, Position>[] expected = buildExpectedForAdvance(ts);
+        Pair<Integer, Position>[] actual = collectAdvance(ts);
 
-    private void assertCycle(Integer... ts) {
-        assertCycleUsingNext(ts);
+        assertArrayEquals(expected, actual);
+    }
+    
+    @Theory
+    public void assertCycle(int repeat, Integer...ts) {
+        assertCycleUsingNext(repeat, ts);
         assertCycleUsingAdvance(ts);
     }
 
@@ -56,20 +93,5 @@ public class ArrayCycleTest {
         Cycle<Integer> target = newCycle();
         target.next();
     }
-
-    @Test
-    public void singletonCycle() {
-        assertCycle(10);
-    }
-
-    @Test
-    public void binaryCycle() {
-        assertCycle(10, 11);
-    }
-
-    @Test
-    public void manyElementsCycle() {
-        assertCycle(10, 11, 12, 13, 14);
-    }
-
+    
 }

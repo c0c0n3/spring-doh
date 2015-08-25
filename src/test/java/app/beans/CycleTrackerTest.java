@@ -2,51 +2,47 @@ package app.beans;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static util.Arrayz.array;
 
-import java.util.Arrays;
+import java.util.List;
 
-import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
+import org.junit.runner.RunWith;
 
+import util.Arrayz;
+import util.Pair;
+
+@RunWith(Theories.class)
 public class CycleTrackerTest {
 
-    public static CycleTracker<Integer> newCycleTracker(Integer... ts) {
+    @DataPoints
+    public static Integer[][] cycles = new Integer[][] {
+        array(), array(10), array(10, 11), array(10, 11, 12, 13, 14)
+    };
+    
+    public static CycleTracker<Integer> newCycleTracker(Integer...ts) {
         Cycle<Integer> target = ArrayCycleTest.newCycle(ts);
         return new CycleTracker<>(target);
     }
 
-    private void assertIterated(Integer... ts) {
+    @Theory
+    public void assertIterated(Integer...ts) {
         CycleTracker<Integer> target = newCycleTracker(ts);
         assertThat(target.iteratedSoFar().toArray().length, is(0));
 
+        List<Integer[]> intialSegments = Arrayz.op(Integer[]::new).inits(ts);
         for (int k = 0; k < ts.length; ++k) {
-            Integer[] expected = Arrays.copyOfRange(ts, 0, k + 1);
+            Integer[] expected = intialSegments.get(k+1);
 
             target.next();
-            Integer[] actual = target.iteratedSoFar().map(Pair::fst)
-                    .toArray(Integer[]::new);
+            Integer[] actual = target.iteratedSoFar()
+                                     .map(Pair::fst)
+                                     .toArray(Integer[]::new);
 
             assertArrayEquals(expected, actual);
         }
     }
-
-    @Test
-    public void emptyCycle() {
-        assertIterated();
-    }
-
-    @Test
-    public void singletonCycle() {
-        assertIterated(10);
-    }
-
-    @Test
-    public void binaryCycle() {
-        assertIterated(10, 11);
-    }
-
-    @Test
-    public void manyElementsCycle() {
-        assertIterated(10, 11, 12, 13, 14);
-    }
-
+    
 }

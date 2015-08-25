@@ -1,5 +1,7 @@
 package app.beans;
 
+import util.Pair;
+
 /**
  * Iterates a finite sequence of <code>T</code>'s, starting over from the first
  * element after reaching the last one. Picture it as a cycle in a directed

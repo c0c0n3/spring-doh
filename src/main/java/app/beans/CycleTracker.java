@@ -1,10 +1,12 @@
 package app.beans;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.springframework.util.Assert;
+import util.Pair;
 
 /**
  * Decorates a {@link Cycle} to collect the elements the cycle has produced.
@@ -19,7 +21,7 @@ public class CycleTracker<T> implements Cycle<T> {
      * @param target the underlying cycle to track.
      */
     public CycleTracker(Cycle<T> target) {
-        Assert.notNull(target);
+        requireNonNull(target, "target");
 
         this.target = target;
         this.iterated = new ArrayList<>();
