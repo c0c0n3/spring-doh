@@ -115,4 +115,35 @@ public class Streams {
         return zipWith(Pair<X,Y>::new, xs, ys);
     }
     
+    /**
+     * Applies the function {@code f} to each element of the stream.
+     * The function {@code f} is called with the index (in {@code ys}) of the
+     * element to map (first argument) and with the element itself (second
+     * argument). That is: {@code map(f,[v,w,...]) = [f(0,v),f(1,w),...]}.
+     * For example (pseudo code) if {@code f(i,x) = i+x} then 
+     * {@code map(f,[1,2,3]) = [1,3,5]}.
+     * @param f turns an index and a {@code Y} into a {@code Z}.
+     * @param ys the list to map.
+     * @return a new list with the mapped elements.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static <Y, Z>
+    Stream<Z> map(BiFunction<Integer, Y, Z> f, Stream<Y> ys) {
+        requireNonNull(f, "f");
+        requireNonNull(ys, "ys");
+        
+        Iterator<Y> iy = ys.iterator();
+        List<Z> zs = new ArrayList<Z>();
+        
+        int index = 0;
+        while (iy.hasNext()) {
+            zs.add(f.apply(index++, iy.next()));
+        }
+        
+        return zs.stream();
+    }
+    // ya, could be done using zipWith (e.g. map f = zipWith f [0..]) but the
+    // implementation is more complicated and has worse performance than the 
+    // code above!
+    
 }

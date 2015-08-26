@@ -4,6 +4,7 @@ import static java.util.Objects.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.IntFunction;
 
 /**
@@ -31,6 +32,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     public static <X, Y> Pair<X, Y>[] newPairs(int size) {
         return (Pair<X, Y>[]) new Pair[size];
     }
+    // works in most cases but see riddle at bottom of file...
     
     /**
      * Same as {@link Streams#zip(java.util.stream.Stream, java.util.stream.Stream)
@@ -104,4 +106,59 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
         return segments;
     }
     
+    /**
+     * Same as {@link Streams#map(BiFunction, java.util.stream.Stream) 
+     * Streams.map()} but operating on arrays.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public <X> A[] map(BiFunction<Integer, X, A> f, X[] list) {
+        requireNonNull(f, "f");
+        requireNonNull(list, "list");
+        
+        A[] mapped = generator.apply(list.length);
+        for (int k = 0; k < mapped.length; ++k) {
+            mapped[k] = f.apply(k, list[k]);
+        }
+        return mapped;
+    }
+    
 }
+/* So here's a riddle:
+ * 
+    @SuppressWarnings("unchecked")
+    public static <X, Y>
+    Pair<X, Y>[] why(Stream<Pair<X, Y>> ps) {
+        Pair<X, Y>[] path = ps.toArray(Arrayz::newPairs);       // newPairs works here
+                             
+        return Arrayz //.op(Arrayz::newPairs)                   // but not here!
+                        .op(sz -> (Pair<X, Y>[]) new Pair[sz])  // inlining works!
+                        .map((i, p) -> p, path);
+    }
+ *
+ * Arrayz::newPairs works in the first call but wouldn't work in the second. 
+ * Moreover, the type of map inferred by the compiler seems to be (note the
+ * nested Pair):
+ * 
+ * <Pair<X, Y>> Pair<Pair<X, Y>, Y>[] 
+ * Arrayz.map(BiFunction<Integer, Pair<X, Y>, Pair<Pair<X, Y>, Y>> f, Pair<X, Y>[] list)
+ * 
+ * But then why the inferred type for map in this case:
+ *
+    @SuppressWarnings("unchecked")
+    Pair<Long, Byte>[] why1(Stream<Pair<Long, Byte>> ps) {
+        Pair<Long, Byte>[] path = ps.toArray(Arrayz::newPairs);
+                             
+        return Arrayz //.op(Arrayz::newPairs)
+                        .op(sz -> (Pair<Long, Byte>[]) new Pair[sz])
+                        .map((i, p) -> p, path);
+    }
+ *
+ * seems to be (no nested Pair):
+ * 
+ * <Pair<Long, Byte>> Pair<Long, Byte>[] 
+ * Arrayz.map(BiFunction<Integer, Pair<Long, Byte>, Pair<Long, Byte>> f, Pair<Long, Byte>[] list)
+ * 
+ * For example look at: StreamsMapTest.mapWithPairIsZip(). 
+ * What the hell is going on?  
+ * If somebody could explain it to me I'll be forever grateful. 
+ */
