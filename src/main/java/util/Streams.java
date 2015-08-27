@@ -7,6 +7,7 @@ import static java.util.stream.Stream.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -145,5 +146,24 @@ public class Streams {
     // ya, could be done using zipWith (e.g. map f = zipWith f [0..]) but the
     // implementation is more complicated and has worse performance than the 
     // code above!
+    
+    /**
+     * Breaks up the given text into lines.
+     * @param text the input text.
+     * @return the sequence of lines making up text.
+     * @throws NullPointerException if {@code null} arguments.
+     */
+    public static Stream<String> lines(String text) {
+        requireNonNull(text);
+        
+        Scanner reader = new Scanner(text);
+        List<String> lines = new ArrayList<>();
+        while (reader.hasNextLine()) {
+            lines.add(reader.nextLine());
+        }
+        reader.close();
+        
+        return lines.stream();
+    }
     
 }

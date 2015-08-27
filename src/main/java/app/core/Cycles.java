@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import util.Pair;
@@ -15,15 +16,22 @@ import util.Pair;
  */
 public class Cycles {
 
+    private static <T, R> 
+    Stream<R> stream(Cycle<T> source, Function<Cycle<T>, R> f) {
+        requireNonNull(source, "source");
+        requireNonNull(f, "f");
+        return Stream.generate(() -> f.apply(source));
+    }
+    
     /**
      * Uses {@code source} as a supplier for a stream of {@code T} elements
      * produced by invocations of {@link Cycle#next() source.next()}.
      * @param source the elements supply.
      * @return a stream of {@code T}'s as produced by {@code source}.
+     * @throws NullPointerException if {@code null} arguments.
      */
     public static <T> Stream<T> stream(Cycle<T> source) {
-        requireNonNull(source, "source");
-        return Stream.generate(() -> source.next());
+        return stream(source, Cycle::next);
     }
 
     /**
@@ -33,11 +41,11 @@ public class Cycles {
      * @param source the elements supply.
      * @return a stream of pairs of {@code T}'s and {@link Cycle.Position}'s
      * as produced by {@code source}.
+     * @throws NullPointerException if {@code null} arguments.
      */
     public static <T> 
     Stream<Pair<T, Cycle.Position>> streamWithPosition(Cycle<T> source) {
-        requireNonNull(source, "source");
-        return Stream.generate(() -> source.advance());
+        return stream(source, Cycle::advance); 
     }
 
     /**
@@ -46,6 +54,7 @@ public class Cycles {
      * @param howMany elements to collect.
      * @param source the elements supply.
      * @return the collected elements.
+     * @throws NullPointerException if {@code null} arguments.
      */
     public static <T> List<T> collect(int howMany, Cycle<T> source) {
         return stream(source).limit(howMany).collect(toList());
