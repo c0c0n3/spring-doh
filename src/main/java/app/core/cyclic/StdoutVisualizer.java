@@ -1,7 +1,7 @@
 package app.core.cyclic;
 
 import static java.util.Objects.requireNonNull;
-import util.Arrayz;
+
 import util.Pair;
 import app.core.cyclic.Cycle.Position;
 
@@ -59,14 +59,6 @@ public class StdoutVisualizer<T> implements CycleVisualizer<T> {
         case OnWay: return Format.OnWay.get();
         default: return null; // keep compiler happy as it can't do case analysis...
         }
-    }
-    
-    public static void main(String[] args) {
-        String[] elements = Arrayz.array("Cape Town", "Knysna", "Durbs", "Jozi");
-        Cycle<String> zaTrip = new ArrayCycle<>(elements);
-        StdoutVisualizer<String> printer = new StdoutVisualizer<>();
-        
-        printer.show(zaTrip, 6);
     }
     
 }
