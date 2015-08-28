@@ -1,4 +1,4 @@
-package app.core;
+package app.core.cyclic;
 
 import util.Pair;
 

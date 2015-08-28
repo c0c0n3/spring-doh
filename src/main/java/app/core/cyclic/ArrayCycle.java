@@ -1,4 +1,4 @@
-package app.core;
+package app.core.cyclic;
 
 /**
  * Implements {@link Cycle} to iterate over an array.

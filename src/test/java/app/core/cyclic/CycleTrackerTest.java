@@ -1,4 +1,4 @@
-package app.core;
+package app.core.cyclic;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;

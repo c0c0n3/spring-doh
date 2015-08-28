@@ -1,9 +1,9 @@
-package app.core;
+package app.core.cyclic;
 
 import static java.util.Objects.requireNonNull;
 import util.Arrayz;
 import util.Pair;
-import app.core.Cycle.Position;
+import app.core.cyclic.Cycle.Position;
 
 /**
  * Prints a {@link Cycle} to standard out.

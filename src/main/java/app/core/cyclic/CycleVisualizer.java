@@ -1,4 +1,4 @@
-package app.core;
+package app.core.cyclic;
 
 /**
  * Renders a {@link Cycle} on some output device.
