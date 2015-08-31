@@ -12,11 +12,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import app.beans.StdoutVisualizerBean;
 import app.config.Wiring;
 import app.core.cyclic.CycleVisualizer;
+import app.core.trips.TripsterGroup;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=SimpleAutowiringTest.class)
-@ComponentScan(basePackageClasses={Wiring.class, SimpleAutowiringTest.class})
+@ComponentScan(basePackageClasses={Wiring.class})
 public class SimpleAutowiringTest {
 
     @Autowired
@@ -26,7 +27,7 @@ public class SimpleAutowiringTest {
     private StdoutVisualizerBean<String> concreteImplementation;
     
     @Autowired
-    private InterfacelessBean oddOneOut;
+    private TripsterGroup<String> interfaceLessBean;
 
     
     @Test
@@ -46,7 +47,7 @@ public class SimpleAutowiringTest {
     
     @Test
     public void autowireWorksEvenWithInterfacelessBean() {
-        assertNotNull(oddOneOut);
+        assertNotNull(interfaceLessBean);
     }
     
 }
