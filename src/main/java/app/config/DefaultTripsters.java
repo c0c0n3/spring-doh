@@ -6,10 +6,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
 /**
  * Hard-coded {@link TripsterConfig} to use if no external config is provided 
  * or for testing.
  */
+@Component
+@Profile("hard-coded-config")
 public class DefaultTripsters implements ConfigProvider<List<TripsterConfig>> {
 
     /**
