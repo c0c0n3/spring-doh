@@ -9,12 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import app.config.Profiles;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=JavaConfigGenericsTest.class)
 @ComponentScan(basePackageClasses={JavaConfigGenericsTest.class})
+@ActiveProfiles(Profiles.HardCodedConfig)
 public class JavaConfigGenericsTest {
     
     @Autowired

@@ -6,10 +6,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import app.beans.StdoutVisualizerBean;
+import app.config.Profiles;
 import app.config.Wiring;
 import app.core.cyclic.CycleVisualizer;
 import app.core.trips.TripsterGroup;
@@ -18,6 +20,7 @@ import app.core.trips.TripsterGroup;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=SimpleAutowiringTest.class)
 @ComponentScan(basePackageClasses={Wiring.class})
+@ActiveProfiles(Profiles.HardCodedConfig)
 public class SimpleAutowiringTest {
 
     @Autowired

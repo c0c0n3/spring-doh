@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * or for testing.
  */
 @Component
-@Profile("hard-coded-config")
+@Profile(Profiles.HardCodedConfig)
 public class DefaultTripsters implements ConfigProvider<List<TripsterConfig>> {
 
     /**

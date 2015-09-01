@@ -19,11 +19,14 @@ import app.core.trips.TripsterGroup;
  * Spring bean wiring configuration.
  */
 @Configuration
-@ComponentScan(basePackageClasses={StdoutVisualizerBean.class})
+@ComponentScan(basePackageClasses={Wiring.class, StdoutVisualizerBean.class})
 public class Wiring {
-
+    
     @Autowired
-    CycleVisualizer<String> visualizer;
+    private CycleVisualizer<String> visualizer;
+    
+    @Autowired
+    private ConfigProvider<List<TripsterConfig>> tripsties;
     
     private Tripster<String> fromConfig(TripsterConfig entry) {
         return new Tripster<>(
@@ -33,11 +36,11 @@ public class Wiring {
     }
 
     private List<Tripster<String>> tripsters() {
-        return new TripsterProvider()
-                  .defaultReadConfig()
-                  .stream()
-                  .map(this::fromConfig)
-                  .collect(toList());
+        return tripsties
+              .defaultReadConfig()
+              .stream()
+              .map(this::fromConfig)
+              .collect(toList());
     }
     
     @Bean

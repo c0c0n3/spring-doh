@@ -7,9 +7,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import app.config.Profiles;
 import app.config.Wiring;
 import app.core.cyclic.ArrayCycle;
 import app.core.cyclic.CycleVisualizer;
@@ -17,6 +19,7 @@ import app.core.cyclic.CycleVisualizer;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=AutowiringGenericsTest.class)
 @ComponentScan(basePackageClasses={Wiring.class, AutowiringGenericsTest.class})
+@ActiveProfiles(Profiles.HardCodedConfig)
 public class AutowiringGenericsTest {
 
     @Autowired

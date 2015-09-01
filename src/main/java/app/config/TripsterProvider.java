@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * Reads tripster configuration from an XML file.
  */
 @Component
-@Profile("file-config")
+@Profile(Profiles.ConfigFile)
 public class TripsterProvider implements ConfigProvider<List<TripsterConfig>> {
 
     /**
