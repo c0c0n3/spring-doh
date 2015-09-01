@@ -3,10 +3,13 @@ package app.core.trips;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
+
+import util.Pair;
 
 /**
  * A bunch of happy tripsters going places.
@@ -46,4 +49,18 @@ public class TripsterGroup<T> {
         }
     }
     
+    /**
+     * Lists the name and description of each member of this group.
+     * @return a list of pairs {@code (name, description)} ordered by name.
+     */
+    public List<Pair<String, String>> describe() {
+        return tripsters
+              .entrySet()
+              .stream()
+              .map(e -> new Pair<>(e.getKey(), e.getValue().getDescription()))
+              .sorted((p, q) -> p.fst().compareTo(q.fst()))
+              .collect(toList());
+    }
+    // NOTE: (1) e.getValue != null as buildMap doesn't add null values
+    //  and  (2) map keys can't be null
 }

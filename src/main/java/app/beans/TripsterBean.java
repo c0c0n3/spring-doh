@@ -12,8 +12,9 @@ import app.core.trips.Tripster;
 //@Component
 public class TripsterBean<T> extends Tripster<T> {
 
-    public TripsterBean(String name, Cycle<T> trip, CycleVisualizer<T> visualizer) {
-        super(name, trip, visualizer);
+    public TripsterBean(String name, String description, 
+            Cycle<T> trip, CycleVisualizer<T> visualizer) {
+        super(name, description, trip, visualizer);
     }
 
 }

@@ -11,6 +11,7 @@ import app.core.cyclic.CycleVisualizer;
 public class Tripster<T> {
 
     private String name;
+    private String description;
     private Cycle<T> trip;
     private CycleVisualizer<T> visualizer;
     
@@ -18,16 +19,20 @@ public class Tripster<T> {
      * Creates a new tripster who will travel from home to each place in his
      * {@code trip} description, eventually coming back home.
      * @param name this tripster's name.
+     * @param description this tripster's description.
      * @param trip the legs of the trip; first entry is this tripster's home.
      * @param visualizer shows the trip to some output device.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public Tripster(String name, Cycle<T> trip, CycleVisualizer<T> visualizer) {
+    public Tripster(String name, String description, 
+                    Cycle<T> trip, CycleVisualizer<T> visualizer) {
         requireNonNull(name, "name");
+        requireNonNull(description, "description");
         requireNonNull(trip, "trip");
         requireNonNull(visualizer, "visualizer");
         
         this.name = name;
+        this.description = description;
         this.trip = trip;
         this.visualizer = visualizer;
     }
@@ -37,6 +42,13 @@ public class Tripster<T> {
      */
     public String getName() {
         return name;
+    }
+    
+    /**
+     * @return this tripster's description.
+     */
+    public String getDescription() {
+        return description;
     }
     
     /**

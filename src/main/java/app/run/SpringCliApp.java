@@ -1,5 +1,6 @@
 package app.run;
 
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import app.config.Profiles;
@@ -18,20 +19,36 @@ import app.core.trips.TripsterGroup;
  */
 public class SpringCliApp extends AbstractCliApp {
 
-    @Override
-    protected void runApp(String tripsterName, int legsTraveled) {
+    private ConfigurableApplicationContext context;
+    
+    public SpringCliApp() {
+        this.context = init();
+    }
+    
+    private ConfigurableApplicationContext init() {
         AnnotationConfigApplicationContext context = 
                 new AnnotationConfigApplicationContext();
+        
         context.getEnvironment().setActiveProfiles(Profiles.ConfigFile);
         context.register(Wiring.class);
         context.refresh();
         
+        return context;
+    }
+    
+    /**
+     * @return our happy bunch of tripsters.
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    protected TripsterGroup<String> tripsters() {
+        return context.getBean(TripsterGroup.class);
+    }
+    
+    @Override
+    protected void runApp(String tripsterName, int legsTraveled) {
         try {
-            @SuppressWarnings("unchecked")
-            TripsterGroup<String> happyBunch = 
-                context.getBean(TripsterGroup.class);
-            
-            happyBunch.showWhereIs(tripsterName, legsTraveled);
+            tripsters().showWhereIs(tripsterName, legsTraveled);
         }
         finally {
             context.close();

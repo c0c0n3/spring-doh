@@ -6,12 +6,15 @@ package app.config;
 public class TripsterConfig {
     
     private String name;
+    private String description;
     private String[] cycle;
+    
     
     public TripsterConfig() { }
     
-    public TripsterConfig(String name, String[] cycle) {
+    public TripsterConfig(String name, String description, String[] cycle) {
         setName(name);
+        setDescription(description);
         setCycle(cycle);
     }
     
@@ -29,6 +32,14 @@ public class TripsterConfig {
     
     public void setCycle(String[] cycle) {
         this.cycle = cycle;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
     
 }

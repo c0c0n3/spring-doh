@@ -1,12 +1,9 @@
 package app.run;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.List;
 
 import app.config.DefaultTripsters;
-import app.config.TripsterConfig;
-import app.core.cyclic.ArrayCycle;
+import app.config.TripsterConfigMapper;
 import app.core.cyclic.StdoutVisualizer;
 import app.core.trips.Tripster;
 import app.core.trips.TripsterGroup;
@@ -19,36 +16,23 @@ import app.core.trips.TripsterGroup;
  * ./gradlew build
  * java -cp build/classes/main app.Main app.run.BareBonesApp tripster n 
  * </pre>
- * where {@code tripster} is either "hipster" or "gauss" (see code below) and
- * {@code n} is an integer.
+ * where {@code tripster} is either "hipster" or "gauss" (from hard-coded 
+ * config) and {@code n} is an integer.
  */
 public class BareBonesApp extends AbstractCliApp {
-    
-    private Tripster<String> fromConfig(TripsterConfig entry) {
-        return new Tripster<>(
-                entry.getName(), 
-                new ArrayCycle<>(entry.getCycle()),
-                new StdoutVisualizer<>());
-    }
     
     /**
      * @return our happy bunch of tripsters.
      */
-    private TripsterGroup<String> tripsters() {
-        List<Tripster<String>> happyBunch = new DefaultTripsters()
-                                           .readConfig()
-                                           .stream()
-                                           .map(this::fromConfig)
-                                           .collect(toList());
-        return new TripsterGroup<>(happyBunch);
-    }
-    
+    @SuppressWarnings("unchecked")
     @Override
-    protected void usage() {
-        System.out.println("Required app arguments: <tripster> <n>");
-        System.out.println("where n is an integer and tripster is one of:");
-        System.out.println("\t'gauss' (ventures in numberland)");
-        System.out.println("\t'hipster' (tours South Africa)");
+    protected TripsterGroup<String> tripsters() {
+        List<Tripster<String>> happyBunch = 
+                TripsterConfigMapper.fromConfig(
+                        new DefaultTripsters(),
+                        new StdoutVisualizer<>());
+                                           
+        return new TripsterGroup<>(happyBunch);
     }
     
     @Override

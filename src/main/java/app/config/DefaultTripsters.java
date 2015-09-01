@@ -28,7 +28,7 @@ public class DefaultTripsters implements ConfigProvider<List<TripsterConfig>> {
                            .map(i -> i + " (mod 5)")
                            .toArray(String[]::new);
         
-        return new TripsterConfig("gauss", intsMod5);
+        return new TripsterConfig("gauss", "Ventures in numberland.", intsMod5);
     }
     
     /**
@@ -37,7 +37,7 @@ public class DefaultTripsters implements ConfigProvider<List<TripsterConfig>> {
      */
     public static TripsterConfig hipster() {
         String[] trip = array("Cape Town", "Knysna", "Durbs", "Jozi");
-        return new TripsterConfig("hipster", trip);
+        return new TripsterConfig("hipster", "Tours South Africa.", trip);
     }
     
     /**
