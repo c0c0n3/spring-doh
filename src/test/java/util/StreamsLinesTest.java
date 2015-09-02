@@ -7,7 +7,7 @@ import static util.Streams.lines;
 
 import org.junit.Test;
 
-public class StreamLinesTest {
+public class StreamsLinesTest {
     
     private static String[] breakLines(String text) {
         return lines(text).toArray(String[]::new);

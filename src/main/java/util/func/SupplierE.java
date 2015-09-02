@@ -2,11 +2,11 @@ package util.func;
 
 import static util.Exceptions.throwAsIfUnchecked;
 
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
- * Same as {@link Consumer} but can throw a checked exception.
- * This way you can use a consumer that throws as an argument to methods that 
+ * Same as {@link Supplier} but can throw a checked exception.
+ * This way you can use a supplier that throws as an argument to methods that 
  * would not type-check with an exception-throwing lambda argument.
  * Any thrown exception bubbles up as is without any wrapping as we use {@code 
  * throwAsIfUnchecked} to fool compiler and JVM.
@@ -18,17 +18,18 @@ import java.util.function.Consumer;
  * ...and that.</a>
  */
 @FunctionalInterface
-public interface ConsumerE<T> extends Consumer<T> {
+public interface SupplierE<T> extends Supplier<T> {
 
     @Override
-    default void accept(T t) {
+    default T get() {
         try {
-            acceptE(t);
+            return getE();
         } catch (Exception e) {
             throwAsIfUnchecked(e);
         }
+        return null;  // never reached, but keeps compiler happy
     }
 
-    void acceptE(T t) throws Exception;
+    T getE() throws Exception;
     
 }
