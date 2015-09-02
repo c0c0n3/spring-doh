@@ -2,7 +2,7 @@ package app.run;
 
 import java.util.List;
 
-import app.config.DefaultTripsters;
+import app.config.HardCodedTripsters;
 import app.config.TripsterConfigMapper;
 import app.core.cyclic.StdoutVisualizer;
 import app.core.trips.Tripster;
@@ -29,7 +29,7 @@ public class BareBonesApp extends AbstractCliApp {
     protected TripsterGroup<String> tripsters() {
         List<Tripster<String>> happyBunch = 
                 TripsterConfigMapper.fromConfig(
-                        new DefaultTripsters(),
+                        new HardCodedTripsters(),
                         new StdoutVisualizer<>());
                                            
         return new TripsterGroup<>(happyBunch);

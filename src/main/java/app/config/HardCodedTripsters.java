@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Profile(Profiles.HardCodedConfig)
-public class DefaultTripsters implements ConfigProvider<List<TripsterConfig>> {
+public class HardCodedTripsters implements ConfigProvider<List<TripsterConfig>> {
 
     /**
      * Ventures in numberland.

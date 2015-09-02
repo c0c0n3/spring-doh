@@ -19,7 +19,7 @@ public class TripsterProvider implements ConfigProvider<List<TripsterConfig>> {
     @Override
     public List<TripsterConfig> readConfig() throws Exception {
         // TODO read from xml config file instead
-        ConfigProvider<List<TripsterConfig>> provider = new DefaultTripsters(); 
+        ConfigProvider<List<TripsterConfig>> provider = new HardCodedTripsters(); 
         return provider.defaultReadConfig();
     }
 

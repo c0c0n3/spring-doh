@@ -4,6 +4,8 @@ package app.config;
  * Holds the data for a tripster as read from configuration.
  */
 public class TripsterConfig {
+    // NB this has to be a Java Bean (i.e. getters/setters, no args ctor) to
+    // be (de-)serialized painlessly by SnakeYaml.
     
     private String name;
     private String description;
