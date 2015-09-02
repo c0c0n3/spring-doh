@@ -1,16 +1,12 @@
-# Our happy bunch of tripsters, same as in DefaultTripsters.
----
-
-tripsters:
-    - name: gauss 
-      description: Ventures in numberland.
-      cycle: 
-        - 0 (mod 5)
-        - 1 (mod 5)
-        - 2 (mod 5)
-        - 3 (mod 5)
-        - 4 (mod 5)
-        
-    - name: hipster
-      description: Tours South Africa.
-      cycle: [Cape Town, Knysna, Durbs, Jozi]
+- !!app.config.TripsterConfig
+  cycle: [0 (mod 5), 1 (mod 5), 2 (mod 5), 3 (mod 5), 4 (mod 5)]
+  description: Ventures in numberland.
+  name: gauss
+- !!app.config.TripsterConfig
+  cycle: [Cape Town, Knysna, Durbs, Jozi]
+  description: Tours South Africa.
+  name: hipster
+- !!app.config.TripsterConfig
+  cycle: [land mass 1, land mass 4, land mass 3, land mass 2]
+  description: Crosses the bridges of Königsberg.
+  name: euler
