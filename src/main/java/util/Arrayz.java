@@ -36,7 +36,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     
     /**
      * Same as {@link Streams#zip(java.util.stream.Stream, java.util.stream.Stream)
-     * Streams.zip()} but operating on arrays.
+     * Streams.zip} but operating on arrays.
      * @throws NullPointerException if either or both arguments are {@code null}.
      */
     public static <X, Y> Pair<X, Y>[] zip(X[] xs, Y[] ys) {
@@ -51,6 +51,23 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
         }
         return zs;
     }
+    
+    /**
+     * Same as {@link Streams#zipIndex(java.util.stream.Stream) Streams.zipIndex} 
+     * but operating on arrays.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static <X> Pair<Integer, X>[] zipIndex(X[] xs) {
+        requireNonNull(xs, "xs");
+        
+        Pair<Integer, X>[] zs = newPairs(xs.length);
+        
+        for (int k = 0; k < xs.length; ++k) {
+            zs[k] = new Pair<Integer, X>(k, xs[k]);
+        }
+        return zs;
+    }
+    // ya, could've used zip to avoid duplication, but this is more efficient.
     
     /**
      * Access to instance operations that require a way to instantiate arrays.
@@ -72,7 +89,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     }
     
     /**
-     * Same as {@link Streams#cycle(int, java.util.stream.Stream) Streams.cycle()}
+     * Same as {@link Streams#cycle(int, java.util.stream.Stream) Streams.cycle}
      * but operating on arrays.
      * @throws NullPointerException if {@code list} is {@code null}.
      */
@@ -89,7 +106,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     }
     
     /**
-     * Same as {@link Streams#inits(java.util.stream.Stream) Streams.inits()}
+     * Same as {@link Streams#inits(java.util.stream.Stream) Streams.inits}
      * but operating on arrays.
      * @throws NullPointerException if {@code list} is {@code null}.
      */
@@ -108,7 +125,7 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     
     /**
      * Same as {@link Streams#map(BiFunction, java.util.stream.Stream) 
-     * Streams.map()} but operating on arrays.
+     * Streams.map} but operating on arrays.
      * @throws NullPointerException if any argument is {@code null}.
      */
     public <X> A[] map(BiFunction<Integer, X, A> f, X[] list) {

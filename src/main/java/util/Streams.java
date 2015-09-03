@@ -117,6 +117,20 @@ public class Streams {
     }
     
     /**
+     * Indexes the elements of the given finite list, starting from {@code 0}.
+     * For example (pseudo code): {@code zipIndex([a,b,c]) = [(a, 0), (b, 1),
+     * (c, 2)]}.
+     * This is a terminal operation on the input streams. 
+     * @param xs the list to index.
+     * @return the indexed list.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static <X> Stream<Pair<Integer, X>> zipIndex(Stream<X> xs) {
+        Stream<Integer> ks = Stream.iterate(0, x -> x + 1);
+        return zip(ks, xs);
+    }
+    
+    /**
      * Applies the function {@code f} to each element of the stream.
      * The function {@code f} is called with the index (in {@code ys}) of the
      * element to map (first argument) and with the element itself (second
