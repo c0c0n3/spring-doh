@@ -1,4 +1,4 @@
-package util.func;
+package util.lambda;
 
 import static util.Exceptions.throwAsIfUnchecked;
 

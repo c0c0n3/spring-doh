@@ -1,10 +1,10 @@
-package util.func;
+package util.lambda;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static java.util.function.Function.identity;
 import static util.Arrayz.array;
-import static util.func.Functions.constant;
+import static util.lambda.Functions.constant;
 
 import java.util.function.Function;
 import java.util.stream.IntStream;

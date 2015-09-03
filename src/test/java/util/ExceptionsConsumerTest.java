@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 import org.junit.Test;
 
-import util.func.ConsumerE;
+import util.lambda.ConsumerE;
 
 public class ExceptionsConsumerTest {
 

@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
-import util.func.FunctionE;
+import util.lambda.FunctionE;
 
 public class ExceptionsFunctionTest {
     

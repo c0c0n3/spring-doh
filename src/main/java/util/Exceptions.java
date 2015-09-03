@@ -6,9 +6,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import util.func.ConsumerE;
-import util.func.FunctionE;
-import util.func.SupplierE;
+import util.lambda.ConsumerE;
+import util.lambda.FunctionE;
+import util.lambda.SupplierE;
 
 /**
  * Helper methods to work with exceptions.

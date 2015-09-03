@@ -1,4 +1,4 @@
-package util.func;
+package util.lambda;
 
 import java.util.function.Function;
 

@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 
 import org.junit.Test;
 
-import util.func.SupplierE;
+import util.lambda.SupplierE;
 
 public class ExceptionsSupplierTest {
     

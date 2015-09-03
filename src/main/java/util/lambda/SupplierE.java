@@ -1,12 +1,12 @@
-package util.func;
+package util.lambda;
 
 import static util.Exceptions.throwAsIfUnchecked;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
- * Same as {@link Function} but can throw a checked exception.
- * This way you can use a function that throws as an argument to methods that 
+ * Same as {@link Supplier} but can throw a checked exception.
+ * This way you can use a supplier that throws as an argument to methods that 
  * would not type-check with an exception-throwing lambda argument.
  * Any thrown exception bubbles up as is without any wrapping as we use {@code 
  * throwAsIfUnchecked} to fool compiler and JVM.
@@ -18,18 +18,18 @@ import java.util.function.Function;
  * ...and that.</a>
  */
 @FunctionalInterface
-public interface FunctionE<T, R> extends Function<T, R> {
+public interface SupplierE<T> extends Supplier<T> {
 
-    @Override 
-    default R apply(T t) {
+    @Override
+    default T get() {
         try {
-            return applyE(t);
+            return getE();
         } catch (Exception e) {
             throwAsIfUnchecked(e);
         }
         return null;  // never reached, but keeps compiler happy
     }
-    
-    R applyE(T t) throws Exception;
+
+    T getE() throws Exception;
     
 }
