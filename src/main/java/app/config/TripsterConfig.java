@@ -1,5 +1,8 @@
 package app.config;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * Holds the data for a tripster as read from configuration.
  */
@@ -42,6 +45,25 @@ public class TripsterConfig {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof TripsterConfig) {
+            return Objects.equals(other.toString(), this.toString());
+        }
+        return false;
+    }
+    
+    @Override
+    public String toString() {
+        String cs = Arrays.toString(cycle);
+        return String.format("%s | %s | %s", name, description, cs);
     }
     
 }

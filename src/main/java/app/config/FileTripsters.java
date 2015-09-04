@@ -1,12 +1,7 @@
 package app.config;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -14,103 +9,75 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import util.lambda.FunctionE;
+import util.spring.io.FifoResourceLoaderAdapter;
+
+
 /**
- * Reads tripster configuration from a YAML file.
+ * Reads tripster configuration from a YAML file, falling back to hard-coded
+ * configuration if no file is avaliable.
+ * This provider will first try to read the file from the {@link #PwdConfig
+ * current directory}; failing that, it will try to find the file in the
+ * {@link #ClasspathConfig classpath}, falling back to hard-code config if
+ * not found.
  */
 @Component
 @Profile(Profiles.ConfigFile)
 public class FileTripsters implements ConfigProvider<List<TripsterConfig>> {
 
+    /**
+     * Location of the YAML file in the classpath.
+     */
+    public static final String ClasspathConfig = 
+            ResourceLoader.CLASSPATH_URL_PREFIX + "/config/tripsters.yml";
+    
+    /**
+     * Location of the YAML file in the current directory.
+     */
+    public static final String PwdConfig = "file:./tripsters.yml";
+    
     @Autowired
     private ResourceLoader resourceLoader;
     
-    private static <X> Function<X, Optional<X>> maybe(X value) {
-        return maybe(Function.identity());
-    }
-    
-    private static <X> Supplier<Optional<X>> maybe(Supplier<X> f) {
-        Objects.requireNonNull(f, "f");
-        return () -> Optional.ofNullable(f.get());
-    }
-    
-    private static <X, Y> Function<X, Optional<Y>> maybe(Function<X, Y> f) {
-        Objects.requireNonNull(f, "f");
-        return x -> Optional.ofNullable(f.apply(x));
-    }
-    
-    
-    
-    
-    private Optional<ResourceLoader> ensureLoader(ResourceLoader candidate) {
-        return Optional.ofNullable(candidate);
-    }
-    
-    private Optional<Resource> ensureResource(Resource candidate) {
-        if (candidate != null && candidate.exists()) {
-            return Optional.of(candidate);
-        }
-        return Optional.empty();
-    }
-    
-    private Optional<InputStream> ensureStream(Resource candidate) throws IOException {
-        InputStream in = candidate.getInputStream();
-        return Optional.ofNullable(in);
-    }
-    
-    private InputStream findConfigFile() throws IOException {
-        InputStream tripstersYmlStream = null;
-        if (resourceLoader != null) {
-            Resource tripstersYml = resourceLoader.getResource("xxx");
-            if (tripstersYml != null && tripstersYml.exists()) {
-                tripstersYmlStream = tripstersYml.getInputStream();
-            }
-        }
-        return tripstersYmlStream;
-    }
-    
-    private InputStream resGetInputStream(Resource r) {
-        try {
-            return r.getInputStream();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
-    static <X, Y> Function<X, Y> wrap(Function<X, Y> f) {
-        return x -> {
-            try {
-                return f.apply(x);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        };
-    }
-    /*
-    private void x() throws IOException {
-        Optional
-        .ofNullable(resourceLoader)
-        .map(loader -> loader.getResource("???"))
-        .map(resource -> resource.exists() ? resource : null)
-        .map(wrap(Resource::getInputStream));
-        //.map(resource -> resource.getInputStream());
-        
-        Optional
-        .ofNullable(resourceLoader)
-        .map(rl -> rl.getResource("???"))
-        .map(this::resGetInputStream);
-        //.flatMap(maybe(loader -> loader::getResource));
-        
-    }
-    */
     /**
      * Reads the happy bunch of tripsters from configuration.
      * @return all configured tripsters; never {@code null}.
      */
     @Override
     public List<TripsterConfig> readConfig() throws Exception {
-        // TODO read from xml config file instead
-        ConfigProvider<List<TripsterConfig>> provider = new HardCodedTripsters(); 
-        return provider.defaultReadConfig();
+        return readConfig(PwdConfig, ClasspathConfig);
     }
-
+    
+    /**
+     * Reads config from the first available out of the specified locations,
+     * falling back to hard-coded config if no file is available.
+     */
+    public List<TripsterConfig> readConfig(String...loci) throws Exception {
+        TripsterConfigYaml reader = new TripsterConfigYaml();
+        HardCodedTripsters fallback = new HardCodedTripsters();
+        FunctionE<Resource, InputStream> getResourceStreamOrThrowIoE = 
+                                                    Resource::getInputStream;
+        
+        return new FifoResourceLoaderAdapter(resourceLoader)
+                    .selectResource(loci)
+                    .map(getResourceStreamOrThrowIoE)  // (*) see note below
+                    .map(reader::fromYaml)
+                    .orElse(fallback.defaultReadConfig());
+    }
 }
+/* NOTE. 
+ * replacing: .map(getResourceStreamOrThrowIoE)
+ *      with: .map(unchecked(Resource::getInputStream))
+ * or for that matter
+     FunctionE<Resource, InputStream> getResourceStreamOrThrowIoE = 
+                                                Resource::getInputStream;
+ * with
+     Function<Resource, InputStream> getResourceStreamOrThrowIoE = 
+                                    unchecked(Resource::getInputStream);
+                                    
+ * will confuse the hell out of the eclipse compiler when trying to do type 
+ * inference, so it won't compile in eclipse, but it will in OpenJDK 1.8. 
+ * Looks like I'm not alone tho as Java's typsie infirmity has caused some
+ * headaches to the surgeons over here too:
+ * - https://bugs.eclipse.org/bugs/show_bug.cgi?id=461004 
+ */
