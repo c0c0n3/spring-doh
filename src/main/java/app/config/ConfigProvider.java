@@ -1,5 +1,7 @@
 package app.config;
 
+import static util.Exceptions.unchecked;
+
 /**
  * Reads some configuration item of type {@code T}.
  */
@@ -14,18 +16,15 @@ public interface ConfigProvider<T> {
     
     /**
      * Calls {@link ConfigProvider#readConfig() readConfig} converting any
-     * exception into a {@link RuntimeException}.
+     * checked exception into an unchecked one that will bubble up without
+     * requiring a 'throws' clause on this method.
      * This is because configuration exceptions are typically non-recoverable
      * (i.e. we can't start the app if we have no sound config) and so it's
      * sort of pointless to have checked exceptions in this case.
      * @return whatever {@code readConfig} would return.
      */
     default T defaultReadConfig() {
-        try {
-            return readConfig();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return unchecked(this::readConfig).get();
     }
     
 }
