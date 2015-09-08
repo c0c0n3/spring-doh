@@ -1,5 +1,6 @@
 package app.config;
 
+import static util.lambda.Functions.constant;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -9,7 +10,6 @@ import java.util.function.Function;
 import app.core.cyclic.ArrayCycle;
 import app.core.cyclic.Cycle;
 import app.core.cyclic.CycleVisualizer;
-import app.core.cyclic.StdoutVisualizer;
 import app.core.trips.Tripster;
 
 /**
@@ -36,7 +36,7 @@ public class TripsterConfigMapper<T> {
             CycleVisualizer<String> sharedVisualizer) {
         return new TripsterConfigMapper<>(
                     entry -> new ArrayCycle<>(entry.getCycle()), 
-                    entry -> new StdoutVisualizer<>())
+                    constant(sharedVisualizer))
               .fromConfig(provider); 
     }
     

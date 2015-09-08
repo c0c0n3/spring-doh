@@ -8,6 +8,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 import util.Pair;
 
@@ -47,6 +48,17 @@ public class TripsterGroup<T> {
         if (tripster != null) {
             tripster.showTripSoFar(legsTraveled);
         }
+    }
+    
+    /**
+     * Lists the members of this group.
+     * @return the group members.
+     */
+    public Stream<Tripster<T>> members() {
+        return tripsters
+                .entrySet()
+                .stream()
+                .map(e -> e.getValue());
     }
     
     /**

@@ -46,16 +46,20 @@ public class AutowiringGenericsTest {
     }
     
     @Test
-    public void visualizersAreSameInstanceDueToTypeErasure() {
+    public void visualizersAreNotSameInstanceEvenWithTypeErasure() {
         Object i = intVisualizer, s = stringVisualizer;
-        assertTrue(i == s);  // horror!!!
+        assertTrue(i != s);   
     }
-    /* NB StdoutVisualizerBean<T> implements CycleVisualizer<T> so you'd expect
-     * StdoutVisualizerBean<String> to match CycleVisualizer<String> and
+    /* NB StdoutVisualizerBean is a prototype, so regardless of type erasure
+     * we get a fresh object every time. But if it was a singleton, then we'd
+     * get the same object! (See test below for tracker bean.)
+     * In fact, StdoutVisualizerBean<T> implements CycleVisualizer<T> so you'd 
+     * expect StdoutVisualizerBean<String> to match CycleVisualizer<String> and
      * StdoutVisualizerBean<Integer> to match CycleVisualizer<Integer> but type
      * information is not available to Spring at runtime (due to type erasure)
-     * when beans are instantiated. So Spring creates a single bean named
-     * 'stdoutVisualizerBean' and returns it in both instances.
+     * when beans are instantiated. So if the bean was a singleton (default) 
+     * Spring would create a single bean named 'stdoutVisualizerBean' and return
+     * it in both instances.
      */
     
     @Test
@@ -63,6 +67,10 @@ public class AutowiringGenericsTest {
         stringVisualizer.show(new ArrayCycle<>(array("x")), 2);
         intVisualizer.show(new ArrayCycle<>(array(1)), 2);
     }
+    /* NB this would work even if stringVisualizer == intVisualizer (i.e. the
+     * bean was a singleton instead of a prototype) due to type erasure!
+     * The horror!
+     */
     
     @Test
     public void stringTrackerNotNull() {

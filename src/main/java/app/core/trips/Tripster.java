@@ -59,4 +59,11 @@ public class Tripster<T> {
         visualizer.show(trip, legsTraveled);
     }
     
+    /**
+     * @return this tripster's visualizer.
+     */
+    public CycleVisualizer<T> getVisualizer() {
+        return visualizer;
+    }
+    
 }
