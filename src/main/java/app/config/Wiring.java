@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+import app.aspects.ArrayCycleFix;
 import app.beans.StdoutVisualizerBean;
 import app.core.cyclic.CycleVisualizer;
 import app.core.trips.Tripster;
@@ -16,7 +18,9 @@ import app.core.trips.TripsterGroup;
  * Spring bean wiring configuration.
  */
 @Configuration
-@ComponentScan(basePackageClasses={Wiring.class, StdoutVisualizerBean.class})
+@ComponentScan(basePackageClasses={
+        Wiring.class, StdoutVisualizerBean.class, ArrayCycleFix.class})
+@EnableAspectJAutoProxy
 public class Wiring {
     
     @Autowired

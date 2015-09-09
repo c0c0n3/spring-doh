@@ -5,20 +5,18 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import app.beans.CycleTrackerBean;
 import app.beans.TrackableCycleBean;
-import app.config.Profiles;
-import app.config.Wiring;
 import app.core.cyclic.Cycle;
 import app.core.cyclic.TrackableCycle;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=Wiring.class)
-@ActiveProfiles(Profiles.HardCodedConfig)
+@ContextConfiguration(classes=MultipleInterfacesTest.class)
+@ComponentScan(basePackageClasses={CycleTrackerBean.class})
 public class MultipleInterfacesTest {
 
     @Autowired
