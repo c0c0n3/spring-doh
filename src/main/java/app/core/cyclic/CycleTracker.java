@@ -11,10 +11,10 @@ import util.Pair;
 /**
  * Decorates a {@link Cycle} to collect the elements the cycle has produced.
  */
-public class CycleTracker<T> implements Cycle<T> {
+public class CycleTracker<T> implements TrackableCycle<T> {
 
-    private Cycle<T> target;
-    private List<Pair<T, Cycle.Position>> iterated;
+    private final Cycle<T> target;
+    private final List<Pair<T, Cycle.Position>> iterated;
 
     /**
      * Creates a new instance to track the given {@code target}.
@@ -48,12 +48,7 @@ public class CycleTracker<T> implements Cycle<T> {
         return target.where();
     }
 
-    /**
-     * @return the elements the underlying {@link Cycle} has produced so far;
-     * the order of the elements in the stream reflects the order in which 
-     * {@link Cycle#next() next} and {@link Cycle#advance() advance} have been
-     * called.
-     */
+    @Override
     public Stream<Pair<T, Cycle.Position>> iteratedSoFar() {
         return iterated.stream(); // (*)
     }

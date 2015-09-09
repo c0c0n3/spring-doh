@@ -60,4 +60,14 @@ public class Cycles {
         return stream(source).limit(howMany).collect(toList());
     }
     
+    /**
+     * Collects the cycle elements iterated so far into a list.
+     * @return the iterated elements from the cycle.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public static <T> List<T> collectTracked(TrackableCycle<T> tracker) {
+        requireNonNull(tracker, "tracker");
+        return tracker.iteratedSoFar().map(Pair::fst).collect(toList());
+    }
+    
 }
