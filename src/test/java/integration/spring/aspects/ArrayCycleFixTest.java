@@ -21,7 +21,7 @@ import app.core.cyclic.Cycles;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=Wiring.class)
-@ActiveProfiles(Profiles.HardCodedConfig)
+@ActiveProfiles({Profiles.HardCodedConfig, Profiles.CliApp})
 public class ArrayCycleFixTest {
 
     private static Cycle<Integer> newArrayCycle(Integer...xs) {

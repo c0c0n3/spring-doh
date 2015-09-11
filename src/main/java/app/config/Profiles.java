@@ -19,4 +19,14 @@ public class Profiles {
      */
     public static final String ConfigFile = "ConfigFile";
     
+    /**
+     * Beans specific to CLI apps.
+     */
+    public static final String CliApp = "CliApp";
+    
+    /**
+     * Beans specific to Web apps.
+     */
+    public static final String WebApp = "WebApp";
+    
 }

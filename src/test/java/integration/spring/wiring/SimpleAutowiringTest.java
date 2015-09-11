@@ -20,7 +20,7 @@ import app.core.trips.TripsterGroup;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=SimpleAutowiringTest.class)
 @ComponentScan(basePackageClasses={Wiring.class})
-@ActiveProfiles(Profiles.HardCodedConfig)
+@ActiveProfiles({Profiles.HardCodedConfig, Profiles.CliApp})
 public class SimpleAutowiringTest {
 
     @Autowired

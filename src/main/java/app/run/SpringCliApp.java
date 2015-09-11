@@ -29,7 +29,8 @@ public class SpringCliApp extends AbstractCliApp {
         AnnotationConfigApplicationContext context = 
                 new AnnotationConfigApplicationContext();
         
-        context.getEnvironment().setActiveProfiles(Profiles.ConfigFile);
+        context.getEnvironment()
+               .setActiveProfiles(Profiles.ConfigFile, Profiles.CliApp);
         context.register(Wiring.class);
         context.refresh();
         

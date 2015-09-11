@@ -25,12 +25,17 @@ targetCompatibility = 1.8
 dependencies {
     compile("org.springframework.boot:spring-boot-starter")
     compile("org.springframework.boot:spring-boot-starter-aop")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-undertow")
     
     testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+configurations {
+    compile.exclude module: "spring-boot-starter-tomcat"
 }
 
 jar {
     baseName = 'spring-doh'
     version =  '0.1.0'
 }
-
