@@ -21,7 +21,7 @@ import app.core.trips.TripsterGroup;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=TripsterGroupSingletonTest.class)
 @ComponentScan(basePackageClasses={Wiring.class})
-@ActiveProfiles({Profiles.HardCodedConfig, Profiles.CliApp})
+@ActiveProfiles({Profiles.HardCodedConfig})
 public class TripsterGroupSingletonTest {
 
     @Autowired

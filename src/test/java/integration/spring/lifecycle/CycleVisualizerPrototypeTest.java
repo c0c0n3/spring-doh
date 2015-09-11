@@ -19,7 +19,7 @@ import app.core.cyclic.CycleVisualizer;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=CycleVisualizerPrototypeTest.class)
 @ComponentScan(basePackageClasses={Wiring.class})
-@ActiveProfiles({Profiles.HardCodedConfig, Profiles.CliApp})
+@ActiveProfiles({Profiles.HardCodedConfig})
 public class CycleVisualizerPrototypeTest {
 
     @Autowired

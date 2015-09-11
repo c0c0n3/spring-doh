@@ -18,7 +18,7 @@ import app.config.Profiles;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=JavaConfigGenericsTest.class)
 @ComponentScan(basePackageClasses={JavaConfigGenericsTest.class})
-@ActiveProfiles({Profiles.HardCodedConfig, Profiles.CliApp})
+@ActiveProfiles({Profiles.HardCodedConfig})
 public class JavaConfigGenericsTest {
     
     @Autowired

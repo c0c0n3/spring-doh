@@ -13,7 +13,7 @@ import app.core.cyclic.StdoutVisualizer;
  */
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@Profile(Profiles.CliApp)
+@Profile(Profiles.NotWebApp)
 public class StdoutVisualizerBean<T> extends StdoutVisualizer<T> {
 
 }

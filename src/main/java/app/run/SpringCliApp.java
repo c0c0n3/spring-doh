@@ -30,7 +30,7 @@ public class SpringCliApp extends AbstractCliApp {
                 new AnnotationConfigApplicationContext();
         
         context.getEnvironment()
-               .setActiveProfiles(Profiles.ConfigFile, Profiles.CliApp);
+               .setActiveProfiles(Profiles.ConfigFile);
         context.register(Wiring.class);
         context.refresh();
         

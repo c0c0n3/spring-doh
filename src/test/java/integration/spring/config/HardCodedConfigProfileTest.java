@@ -20,7 +20,7 @@ import app.config.data.DefaultTripsters;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=Wiring.class)
-@ActiveProfiles({Profiles.HardCodedConfig, Profiles.CliApp})
+@ActiveProfiles({Profiles.HardCodedConfig})
 public class HardCodedConfigProfileTest {
 
     @Autowired

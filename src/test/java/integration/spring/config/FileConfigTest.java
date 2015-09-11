@@ -26,7 +26,7 @@ import app.run.TripstersYmlGen;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes=Wiring.class)
-@ActiveProfiles({Profiles.ConfigFile, Profiles.CliApp})
+@ActiveProfiles({Profiles.ConfigFile})
 public class FileConfigTest {
     
     @Rule
