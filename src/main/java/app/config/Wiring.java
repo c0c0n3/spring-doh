@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import app.aspects.ArrayCycleFix;
 import app.beans.StdoutVisualizerBean;
@@ -18,8 +21,12 @@ import app.core.trips.TripsterGroup;
  * Spring bean wiring configuration.
  */
 @Configuration
-@ComponentScan(basePackageClasses={
-        Wiring.class, StdoutVisualizerBean.class, ArrayCycleFix.class})
+@ComponentScan(
+    basePackageClasses = {
+        Wiring.class, StdoutVisualizerBean.class, ArrayCycleFix.class },
+    excludeFilters = {
+        @Filter(type = FilterType.ANNOTATION, value = EnableWebMvc.class) }
+)
 @EnableAspectJAutoProxy
 public class Wiring {
     

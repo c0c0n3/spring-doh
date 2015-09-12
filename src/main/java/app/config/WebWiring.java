@@ -4,16 +4,20 @@ import static util.Arrayz.array;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import app.web.HomeController;
 
 
 /**
- * Spring bean wiring configuration.
+ * Additional Spring configuration for the web app.
  */
 @Configuration
 @ComponentScan(basePackageClasses={HomeController.class})
+@EnableWebMvc
+@Profile(Profiles.WebApp)
 public class WebWiring 
     extends AbstractAnnotationConfigDispatcherServletInitializer {
 
@@ -34,3 +38,7 @@ public class WebWiring
     }
     
 }
+/* NOTE. To go beyond minimal configuration, we'd need getServletConfigClasses
+ * to also return a class implementing WebMvcConfigurer or out of convenience, 
+ * extending WebMvcConfigurerAdapter. 
+ */
