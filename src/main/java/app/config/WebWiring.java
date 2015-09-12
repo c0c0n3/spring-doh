@@ -6,14 +6,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-import app.web.TripstersController;
+import app.web.HomeController;
 
 
 /**
  * Spring bean wiring configuration.
  */
 @Configuration
-@ComponentScan(basePackageClasses={TripstersController.class})
+@ComponentScan(basePackageClasses={HomeController.class})
 public class WebWiring 
     extends AbstractAnnotationConfigDispatcherServletInitializer {
 
