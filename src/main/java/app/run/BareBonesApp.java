@@ -7,6 +7,7 @@ import app.config.TripsterConfigMapper;
 import app.core.cyclic.StdoutVisualizer;
 import app.core.trips.Tripster;
 import app.core.trips.TripsterGroup;
+import app.core.trips.TripsterSpotter;
 
 /**
  * Simple CLI app with hard-coded configuration to exercise the core 
@@ -26,18 +27,13 @@ public class BareBonesApp extends AbstractCliApp {
      */
     @SuppressWarnings("unchecked")
     @Override
-    protected TripsterGroup<String> tripsters() {
-        List<Tripster<String>> happyBunch = 
-                TripsterConfigMapper.fromConfig(
-                        new HardCodedTripsters(),
-                        new StdoutVisualizer<>());
-                                           
-        return new TripsterGroup<>(happyBunch);
-    }
-    
-    @Override
-    protected void runApp(String tripsterName, int legsTraveled) {
-        tripsters().showWhereIs(tripsterName, legsTraveled);
+    protected TripsterSpotter<String> spotter() {
+        List<Tripster<String>> happyBunch = TripsterConfigMapper
+                .newWithStringArray()
+                .fromConfig(new HardCodedTripsters());
+
+        return new TripsterSpotter<>(new TripsterGroup<>(happyBunch),
+                                     new StdoutVisualizer<>());
     }
     
 }

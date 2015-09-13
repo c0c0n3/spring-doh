@@ -14,7 +14,7 @@ import app.beans.StdoutVisualizerBean;
 import app.config.Profiles;
 import app.config.Wiring;
 import app.core.cyclic.CycleVisualizer;
-import app.core.trips.TripsterGroup;
+import app.core.trips.TripsterSpotter;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -30,7 +30,7 @@ public class SimpleAutowiringTest {
     private StdoutVisualizerBean<String> concreteImplementation;
     
     @Autowired
-    private TripsterGroup<String> interfaceLessBean;
+    private TripsterSpotter<String> interfaceLessBean;
 
     
     @Test

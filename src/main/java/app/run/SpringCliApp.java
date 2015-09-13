@@ -5,7 +5,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import app.config.Profiles;
 import app.config.Wiring;
-import app.core.trips.TripsterGroup;
+import app.core.trips.TripsterSpotter;
 
 /**
  * Simple Spring CLI app to exercise the core functionality.
@@ -42,14 +42,14 @@ public class SpringCliApp extends AbstractCliApp {
      */
     @SuppressWarnings("unchecked")
     @Override
-    protected TripsterGroup<String> tripsters() {
-        return context.getBean(TripsterGroup.class);
+    protected TripsterSpotter<String> spotter() {
+        return context.getBean(TripsterSpotter.class);
     }
     
     @Override
     protected void runApp(String tripsterName, int legsTraveled) {
         try {
-            tripsters().showWhereIs(tripsterName, legsTraveled);
+            super.runApp(tripsterName, legsTraveled);
         }
         finally {
             context.close();

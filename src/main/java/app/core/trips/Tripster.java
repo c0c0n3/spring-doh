@@ -3,38 +3,32 @@ package app.core.trips;
 import static java.util.Objects.requireNonNull;
 
 import app.core.cyclic.Cycle;
-import app.core.cyclic.CycleVisualizer;
 
 /**
  * Goes on a trip away from home and eventually gets back home. 
  */
 public class Tripster<T> {
 
-    private String name;
-    private String description;
-    private Cycle<T> trip;
-    private CycleVisualizer<T> visualizer;
-    
+    private final String name;
+    private final String description;
+    private final Cycle<T> trip;
+
     /**
      * Creates a new tripster who will travel from home to each place in his
      * {@code trip} description, eventually coming back home.
      * @param name this tripster's name.
      * @param description this tripster's description.
      * @param trip the legs of the trip; first entry is this tripster's home.
-     * @param visualizer shows the trip to some output device.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public Tripster(String name, String description, 
-                    Cycle<T> trip, CycleVisualizer<T> visualizer) {
+    public Tripster(String name, String description, Cycle<T> trip) {
         requireNonNull(name, "name");
         requireNonNull(description, "description");
         requireNonNull(trip, "trip");
-        requireNonNull(visualizer, "visualizer");
         
         this.name = name;
         this.description = description;
         this.trip = trip;
-        this.visualizer = visualizer;
     }
     
     /**
@@ -52,18 +46,10 @@ public class Tripster<T> {
     }
     
     /**
-     * Shows the legs of the trip this tripster has traveled so far. 
-     * @param legsTraveled number hops away from home in the trip.
+     * @return this tripster's trip.
      */
-    public void showTripSoFar(int legsTraveled) {
-        visualizer.show(trip, legsTraveled);
-    }
-    
-    /**
-     * @return this tripster's visualizer.
-     */
-    public CycleVisualizer<T> getVisualizer() {
-        return visualizer;
+    public Cycle<T> getTrip() {
+        return trip;
     }
     
 }
