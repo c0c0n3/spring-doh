@@ -38,4 +38,29 @@ public class Strings {
         return buffer.toString();
     }
     
+    /**
+     * Throws an exception if the given string is {@link #isNullOrEmpty(String) 
+     * null or empty}.
+     * @param x the string to test.
+     * @param message optional exception message; ignored if {@code null} or
+     * empty.
+     * @throws IllegalArgumentException if {@code x} is {@code null} or empty.
+     */
+    public static void requireString(String x, String message) {
+        if (isNullOrEmpty(x)) {
+            if(isNullOrEmpty(message)) throw new IllegalArgumentException();
+            throw new IllegalArgumentException(message);
+        }
+    }
+    
+    /**
+     * Throws an exception if the given string is {@link #isNullOrEmpty(String) 
+     * null or empty}.
+     * @param x the string to test.
+     * @throws IllegalArgumentException if {@code x} is {@code null} or empty.
+     */
+    public static void requireString(String x) {
+        requireString(x, null);
+    }
+    
 }
