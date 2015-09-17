@@ -1,4 +1,4 @@
-package util.servlet;
+package util.servlet.http;
 
 import static java.util.Objects.requireNonNull;
 import static util.Exceptions.unchecked;
@@ -19,8 +19,13 @@ import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Sets character encoding for servlets that read/write characters from/to the
@@ -74,8 +79,14 @@ public class CharEncodingFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
-        chain.doFilter(new RequestWrapper(request), 
-                       new ResponseWrapper(response));
+        if (!( request instanceof HttpServletRequest 
+             && response instanceof HttpServletResponse )) return;
+        
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        
+        chain.doFilter(new RequestWrapper(httpRequest), 
+                       new ResponseWrapper(httpResponse));
     }
 
     @Override
@@ -85,10 +96,13 @@ public class CharEncodingFilter implements Filter {
     public void destroy() { }
 
     
-    private class RequestWrapper extends ServletRequestWrapper {
+    private class RequestWrapper extends HttpServletRequestWrapper {
         
-        RequestWrapper(ServletRequest target) {
+        HttpServletRequest target;
+        
+        RequestWrapper(HttpServletRequest target) {
             super(target);
+            this.target = target;
         }
         
         @Override
@@ -123,10 +137,13 @@ public class CharEncodingFilter implements Filter {
         
     }
     
-    private class ResponseWrapper extends ServletResponseWrapper {
+    private class ResponseWrapper extends HttpServletResponseWrapper {
         
-        ResponseWrapper(ServletResponse target) {
+        HttpServletResponse target;
+        
+        ResponseWrapper(HttpServletResponse target) {
             super(target);
+            this.target = target;
         }
         
         @Override
@@ -134,5 +151,13 @@ public class CharEncodingFilter implements Filter {
             setEncodingIfAbsent(target);
             return super.getWriter();
         }
+        
+        @Override
+        public ServletOutputStream getOutputStream() throws IOException {
+            setEncodingIfAbsent(target);
+            return super.getOutputStream();
+        }
+        
     }
+    
 }
