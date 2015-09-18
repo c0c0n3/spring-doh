@@ -1,53 +1,27 @@
 package util.servlet.http;
 
 import static java.util.Objects.requireNonNull;
-import static util.Exceptions.unchecked;
-import static util.Exceptions.throwAsIfUnchecked;
-import static util.Strings.isNullOrEmpty;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
+
+import util.Pair;
+import util.servlet.ServletCharEncoding;
 
 /**
- * <p>
- * Sets character encoding for servlets that read/write characters from/to 
- * the request/response if none has been specified.
- * This filter is useful when most or all web components in the application
- * handle text in a given character encoding only (e.g. UTF-8); using this 
- * filter explicit setting of the character encoding in each component can 
- * then be avoided.
- * </p>
- * <p>Note that in order to avoid interference (as much as possible) with other
- * components in the HTTP processing pipeline, this filter delays the setting of
- * the character encoding until the very last moment it is possible to do it. 
- * (According to the servlet spec, for requests, this is just before parameters
- * are read or the body is read; for responses, it is just before the body is 
- * written.) In fact, a request/response handler downstream may make a decision
- * as to what encoding to use based on the absence of the character encoding,
- * which is why this filter holds off setting it. 
- * </p>
+ * Base class for filters that set request/response character encoding.
+ * @see RequestCharEncodingFilter
+ * @see ResponseCharEncodingFilter
  */
-public class CharEncodingFilter implements Filter {
+public abstract class CharEncodingFilter implements Filter {
     
     /* NB this is how the various possible cases are handled.
      * 
@@ -83,136 +57,50 @@ public class CharEncodingFilter implements Filter {
      */
 
     /**
-     * Creates a new filter to default character encoding to UTF-8. 
+     * Creates a new request filter to default character encoding to UTF-8. 
      * @return a new filter to add UTF-8 default encoding.
      */
-    public static CharEncodingFilter Utf8() {
-        return new CharEncodingFilter(StandardCharsets.UTF_8);
+    public static RequestCharEncodingFilter Utf8Request() {
+        return new RequestCharEncodingFilter(ServletCharEncoding.Utf8());
     }
-    
-    private final String defaultEncoding;
     
     /**
-     * Creates a new instance to set the specified encoding if none is specified
-     * in the request/response or by the servlet.
-     * @param defaultEncoding the default encoding to use if none is present.
+     * Creates a new response filter to default character encoding to UTF-8. 
+     * @return a new filter to add UTF-8 default encoding.
      */
-    public CharEncodingFilter(Charset defaultEncoding) {
-        requireNonNull(defaultEncoding, "defaultEncoding");
-        
-        this.defaultEncoding = defaultEncoding.name();
+    public static ResponseCharEncodingFilter Utf8Response() {
+        return new ResponseCharEncodingFilter(ServletCharEncoding.Utf8());
     }
     
-    private void setEncodingIfAbsent(Supplier<String> getter, 
-            Consumer<String> setter) throws IOException {
-        String givenEncoding = getter.get();
-        if (isNullOrEmpty(givenEncoding)) {
-            setter.accept(defaultEncoding);
-        }
+    protected final ServletCharEncoding defaultEncoder;
+    
+    protected CharEncodingFilter(ServletCharEncoding defaultEncoder) {
+        requireNonNull(defaultEncoder, "defaultEncoder");
+        this.defaultEncoder = defaultEncoder;
     }
     
-    private void setEncodingIfAbsent(ServletRequest r) {
-        try {
-            setEncodingIfAbsent(r::getCharacterEncoding, 
-                                unchecked(r::setCharacterEncoding));
-        } catch (IOException e) {
-            throwAsIfUnchecked(e);
-        }
-    }
-    
-    private void setEncodingIfAbsent(ServletResponse r) throws IOException {
-        setEncodingIfAbsent(r::getCharacterEncoding, 
-                            r::setCharacterEncoding);
-    }
+    protected abstract Pair<ServletRequest, ServletResponse> wrap(
+            HttpServletRequest req, HttpServletResponse res);
     
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
-        if (!( request instanceof HttpServletRequest 
-             && response instanceof HttpServletResponse )) return;
-        
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        
-        chain.doFilter(new RequestWrapper(httpRequest), 
-                       new ResponseWrapper(httpResponse));
+        if (request instanceof HttpServletRequest
+            && response instanceof HttpServletResponse) {
+            Pair<ServletRequest, ServletResponse> wrapped = wrap(
+                    (HttpServletRequest) request,
+                    (HttpServletResponse) response);
+            
+            request = wrapped.fst();
+            response = wrapped.snd();
+        }
+        chain.doFilter(request, response);
     }
-
+    
     @Override
     public void init(FilterConfig filterConfig) throws ServletException { }
 
     @Override
     public void destroy() { }
-
-    
-    private class RequestWrapper extends HttpServletRequestWrapper {
-        
-        HttpServletRequest target;
-        
-        RequestWrapper(HttpServletRequest target) {
-            super(target);
-            this.target = target;
-        }
-        
-        @Override
-        public String getParameter(String name) {
-            setEncodingIfAbsent(target);
-            return super.getParameter(name);
-        }
-
-        @Override
-        public Enumeration<String> getParameterNames() {
-            setEncodingIfAbsent(target);
-            return super.getParameterNames();
-        }
-
-        @Override
-        public String[] getParameterValues(String name) {
-            setEncodingIfAbsent(target);
-            return super.getParameterValues(name);
-        }
-
-        @Override
-        public Map<String, String[]> getParameterMap() {
-            setEncodingIfAbsent(target);
-            return super.getParameterMap();
-        }
-        
-        @Override 
-        public ServletInputStream getInputStream() throws IOException {
-            setEncodingIfAbsent(target);
-            return super.getInputStream();
-        }
-        
-        @Override
-        public BufferedReader getReader() throws IOException {
-            setEncodingIfAbsent(target);
-            return super.getReader();
-        }
-        
-    }
-    
-    private class ResponseWrapper extends HttpServletResponseWrapper {
-        
-        HttpServletResponse target;
-        
-        ResponseWrapper(HttpServletResponse target) {
-            super(target);
-            this.target = target;
-        }
-        
-        @Override
-        public ServletOutputStream getOutputStream() throws IOException {
-            setEncodingIfAbsent(target);
-            return super.getOutputStream();
-        }
-        
-        @Override
-        public PrintWriter getWriter() throws IOException {
-            setEncodingIfAbsent(target);
-            return super.getWriter();
-        }
-        
-    }
     
 }
