@@ -2,12 +2,19 @@ package app.config;
 
 import static util.Arrayz.array;
 
+import java.nio.charset.StandardCharsets;
+
+import javax.servlet.Filter;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import util.servlet.http.CharEncodingFilter;
 import app.web.HomeController;
 
 
@@ -35,6 +42,17 @@ public class WebWiring
     @Override
     protected String[] getServletMappings() {
         return array("/");
+    }
+    
+    @Override
+    protected Filter[] getServletFilters() {
+        return array(CharEncodingFilter.Utf8Request(), 
+                     CharEncodingFilter.Utf8Response());
+    }
+    
+    @Bean
+    public StringHttpMessageConverter stringHttpMessageConverter() {
+        return new StringHttpMessageConverter(StandardCharsets.UTF_8);
     }
     
 }

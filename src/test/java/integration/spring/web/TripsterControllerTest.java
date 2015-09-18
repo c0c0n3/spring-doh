@@ -1,5 +1,6 @@
 package integration.spring.web;
 
+import static util.Arrayz.array;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.*;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import util.servlet.http.CharEncodingFilter;
 import app.config.Profiles;
 import app.config.TripsterConfig;
 import app.config.WebWiring;
@@ -38,6 +40,17 @@ import app.web.TripsterController;
 @ActiveProfiles({Profiles.HardCodedConfig, Profiles.WebApp})
 public class TripsterControllerTest {
     
+    public static String[] urlFormats = array(
+            "/xxx",      // non-existent resource
+            "/xxx?at=1", // valid invocation but non-existing resource
+            "/%s/",      // trailing slash
+            "/%s",       // missing query
+            "/%s?",      // missing query param
+            "/%s?%s",    // missing query arg
+            "/%s?%s=",   // missing query arg value
+            "/%s?%s=%s"  // valid invocation, e.g. /hipster?at=3
+    );    
+    
     @Autowired
     private WebApplicationContext wac;
     private MockMvc mockMvc;
@@ -45,29 +58,46 @@ public class TripsterControllerTest {
     
     @Before
     public void setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mockMvc = MockMvcBuilders
+                 .webAppContextSetup(wac)
+                 .addFilters(
+                         CharEncodingFilter.Utf8Request(), 
+                         CharEncodingFilter.Utf8Response())
+                 .build();
         tripster = DefaultTripsters.hipster();
     }
     
-    private ResultActions contentType(ResultActions x) throws Exception {
+    private ResultActions perform(String urlFormat) throws Exception {
+        String url = String.format(urlFormat, 
+                tripster.getName(), TripsterController.LegsTraveledQueryPar, 1);
+        
+        return mockMvc.perform(get(url))
+                    .andDo(print())  // comment this in/out to see/hide Spring dump
+        ;
+    }
+    
+    private ResultActions expectContentType(ResultActions x) throws Exception {
         return x
         .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
         .andExpect(content().encoding("UTF-8"));
     }
     
-    @Test
-    public void t() throws Exception {
-        String url = String.format("/%s?%s=%s", 
-                tripster.getName(), TripsterController.LegsTraveledQueryPar, 1);
+    private ResultActions expectFirstCycleElement(ResultActions x) throws Exception {
         String fstCycleElement = tripster.getCycle()[0];
-        
-        mockMvc
-        .perform(get(url))
-        // .andDo(print())  // comment this in/out to see/hide Spring dump
-        .andExpect(status().isOk())
-        .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
-        .andExpect(content().encoding("UTF-8"))
-        .andExpect(content().string(containsString(fstCycleElement)));
+        return x.andExpect(content().string(containsString(fstCycleElement)));
+    }
+    
+    //@Test
+    public void nonExistentResource() throws Exception {
+        perform("/xxx").andExpect(status().is4xxClientError());
+    }
+    
+    @Test
+    public void validInvocation() throws Exception {
+        ResultActions x = perform("/%s?%s=%s")
+                         .andExpect(status().isOk());
+        x = expectContentType(x);
+        expectFirstCycleElement(x);
     }
     
     //@Test

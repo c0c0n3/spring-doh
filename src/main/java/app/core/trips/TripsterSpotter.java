@@ -33,11 +33,15 @@ public class TripsterSpotter<T> {
      * Shows what legs of the trip the named tripster has traveled so far. 
      * @param tripsterName the name of the tripster.
      * @param legsTraveled number of hops away from the tripster's home.
+     * @return {@code true} if the tripster was found and the trip information
+     * was shown; {@code false} otherwise.
      */
-    public void showWhereIs(String tripsterName, int legsTraveled) {
-        tripsters.lookup(tripsterName)
+    public boolean showWhereIs(String tripsterName, int legsTraveled) {
+        return tripsters
+                 .lookup(tripsterName)
                  .map(Tripster::getTrip)
-                 .map(t -> { visualizer.show(t, legsTraveled); return 0; });
+                 .map(t -> { visualizer.show(t, legsTraveled); return 1; })
+                 .isPresent();
     }
     
     /**
