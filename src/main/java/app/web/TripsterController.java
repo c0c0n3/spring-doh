@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
 
+import util.Identifiable;
 import app.beans.StringVisualizerBean;
 import app.config.Profiles;
 import app.core.trips.TripsterSpotter;
@@ -19,10 +20,12 @@ import app.core.trips.TripsterSpotter;
 @RequestMapping("/")
 @Scope(WebApplicationContext.SCOPE_REQUEST)
 @Profile(Profiles.WebApp)
-public class TripsterController {
+public class TripsterController implements Identifiable {
 
     public static final String TripsterNamePathVar = "tripster";
     public static final String LegsTraveledQueryPar = "at";
+    public static final String TellIdPath = "tell/id/of/TripsterController";
+    public static final String TellVisualizerIdPath = "tell/id/of/TripsterController/visualizer";
     
     @Autowired
     private TripsterSpotter<String> spotter;
@@ -45,6 +48,17 @@ public class TripsterController {
             return visualizer.getShown();
         }
         return null;
+    }
+    
+    @RequestMapping(value = TellIdPath, method = GET)
+    @Override
+    public String id() {
+        return Identifiable.super.id();
+    }
+    
+    @RequestMapping(value = TellVisualizerIdPath, method = GET)
+    public String visualizerId() {
+        return spotter.getVisualizer().id();
     }
     
 }

@@ -1,5 +1,6 @@
 package app.core.cyclic;
 
+import util.Identifiable;
 import util.Pair;
 
 /**
@@ -8,7 +9,7 @@ import util.Pair;
  * graph: start from a node, go to the next, next again, and so on until
  * eventually coming back to the starting point.
  */
-public interface Cycle<T> {
+public interface Cycle<T> extends Identifiable {
 
     /**
      * {@link Cycle#where() Where} are we in the cycle? We can either be at the

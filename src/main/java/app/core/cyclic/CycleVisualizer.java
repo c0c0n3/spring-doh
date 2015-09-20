@@ -1,9 +1,11 @@
 package app.core.cyclic;
 
+import util.Identifiable;
+
 /**
  * Renders a {@link Cycle} on some output device.
  */
-public interface CycleVisualizer<T> {
+public interface CycleVisualizer<T> extends Identifiable {
 
     /**
      * Collects {@code length} elements from the cycle and shows them on an
