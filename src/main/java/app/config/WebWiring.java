@@ -1,62 +1,36 @@
 package app.config;
 
-import static util.Arrayz.array;
-
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
-import javax.servlet.Filter;
-
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import util.servlet.http.CharEncodingFilter;
 import app.web.HomeController;
 
 
 /**
- * Additional Spring configuration for the web app.
+ * Additional Spring bean wiring and configuration for the web app.
  */
 @Configuration
 @ComponentScan(basePackageClasses={HomeController.class})
 @EnableWebMvc
 @Profile(Profiles.WebApp)
-public class WebWiring 
-    extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class WebWiring extends WebMvcConfigurerAdapter {
 
-    @Override
-    protected Class<?>[] getRootConfigClasses() {
-        return array(Wiring.class);
+    @Override 
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(new StringHttpMessageConverter(StandardCharsets.UTF_8));
     }
-    // NB this would be a "no no oh d'oh" in a real webapp as the visualizer is shared...
-
-    @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return array(WebWiring.class);
-    }
-
-    @Override
-    protected String[] getServletMappings() {
-        return array("/");
-    }
-    
-    @Override
-    protected Filter[] getServletFilters() {
-        return array(CharEncodingFilter.Utf8Request(), 
-                     CharEncodingFilter.Utf8Response());
-    }
-    
-    @Bean
-    public StringHttpMessageConverter stringHttpMessageConverter() {
-        return new StringHttpMessageConverter(StandardCharsets.UTF_8);
-    }
-    
+    /* NB this overrides the default string converter which uses ISO-8859-1 as
+     * default character encoding. The default encoding is what this converter
+     * uses if the response content type has no charset parameter.
+     * So with this set up, we can produce response strings without having to
+     * specify UTF-8 as charset every time.
+     */
 }
-/* NOTE. To go beyond minimal configuration, we'd need getServletConfigClasses
- * to also return a class implementing WebMvcConfigurer or out of convenience, 
- * extending WebMvcConfigurerAdapter. 
- */
