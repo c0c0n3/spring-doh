@@ -1,26 +1,24 @@
-package integration.spring.lifecycle;
+package integration.spring.web;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.ContextHierarchy;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import util.servlet.http.CharEncodingFilter;
 import app.config.Profiles;
 import app.config.WebWiring;
 import app.config.Wiring;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextHierarchy({
         @ContextConfiguration(classes = Wiring.class),
@@ -36,21 +34,30 @@ public class BaseWebTest {
     
     @Before
     public void setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        mockMvc = MockMvcBuilders
+                 .webAppContextSetup(wac)
+                 .addFilters(
+                         CharEncodingFilter.Utf8Request(), 
+                         CharEncodingFilter.Utf8Response())
+                 .build();
+        
+        additionalSetup();
+    }
+    
+    protected void additionalSetup() { }
+    
+    protected ResultActions doGet(String url) throws Exception {
+        return mockMvc
+              .perform(get(url))
+              .andDo(print());  // comment this in/out to see/hide Spring dump
+    }
+    
+    protected String doGetAndReturnResponseBody(String url) throws Exception {
+        return doGet(url).andReturn().getResponse().getContentAsString();
     }
     
     protected String tellId(String relPath) throws Exception {
-        return mockMvc
-                .perform(get("/" + relPath))
-                .andDo(print())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        return doGetAndReturnResponseBody("/" + relPath);
     }
-    
-    @Test
-    public void ignoreThis() { }
-    // NB avoids the "No runnable methods" exception, while letting us keep
-    // all the annotations in this base class.
     
 }

@@ -8,37 +8,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.ContextHierarchy;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import util.servlet.http.CharEncodingFilter;
-import app.config.Profiles;
 import app.config.TripsterConfig;
-import app.config.WebWiring;
-import app.config.Wiring;
 import app.config.data.DefaultTripsters;
 import app.web.TripsterController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextHierarchy({
-        @ContextConfiguration(classes = Wiring.class),
-        @ContextConfiguration(classes = WebWiring.class)
-})
-@ActiveProfiles({Profiles.HardCodedConfig, Profiles.WebApp})
-public class TripsterControllerTest {
+public class TripsterControllerTest extends BaseWebTest {
     
     public static String[] urlFormats = array(
             "/xxx",      // non-existent resource
@@ -50,20 +31,11 @@ public class TripsterControllerTest {
             "/%s?%s=",   // missing query arg value
             "/%s?%s=%s"  // valid invocation, e.g. /hipster?at=3
     );    
-    
-    @Autowired
-    private WebApplicationContext wac;
-    private MockMvc mockMvc;
+
     private TripsterConfig tripster;
     
-    @Before
-    public void setup() {
-        mockMvc = MockMvcBuilders
-                 .webAppContextSetup(wac)
-                 .addFilters(
-                         CharEncodingFilter.Utf8Request(), 
-                         CharEncodingFilter.Utf8Response())
-                 .build();
+    @Override
+    public void additionalSetup() {
         tripster = DefaultTripsters.hipster();
     }
     
@@ -71,9 +43,7 @@ public class TripsterControllerTest {
         String url = String.format(urlFormat, 
                 tripster.getName(), TripsterController.LegsTraveledQueryPar, 1);
         
-        return mockMvc.perform(get(url))
-                    .andDo(print())  // comment this in/out to see/hide Spring dump
-        ;
+        return doGet(url);
     }
     
     private ResultActions expectContentType(ResultActions x) throws Exception {
