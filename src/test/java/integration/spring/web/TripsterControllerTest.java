@@ -1,11 +1,6 @@
 package integration.spring.web;
 
-import static util.Arrayz.array;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.Test;
@@ -19,18 +14,7 @@ import app.config.data.DefaultTripsters;
 import app.web.TripsterController;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-public class TripsterControllerTest extends BaseWebTest {
-    
-    public static String[] urlFormats = array(
-            "/xxx",      // non-existent resource
-            "/xxx?at=1", // valid invocation but non-existing resource
-            "/%s/",      // trailing slash
-            "/%s",       // missing query
-            "/%s?",      // missing query param
-            "/%s?%s",    // missing query arg
-            "/%s?%s=",   // missing query arg value
-            "/%s?%s=%s"  // valid invocation, e.g. /hipster?at=3
-    );    
+public class TripsterControllerTest extends BaseWebTest {  
 
     private TripsterConfig tripster;
     
@@ -52,36 +36,69 @@ public class TripsterControllerTest extends BaseWebTest {
         .andExpect(content().encoding("UTF-8"));
     }
     
-    private ResultActions expectFirstCycleElement(ResultActions x) throws Exception {
-        String fstCycleElement = tripster.getCycle()[0];
-        return x.andExpect(content().string(containsString(fstCycleElement)));
+    private ResultActions performAndExpectValidResponse(String urlFormat) 
+            throws Exception{
+        ResultActions x = perform(urlFormat).andExpect(status().isOk());
+        return expectContentType(x);
     }
     
-    //@Test
-    public void nonExistentResource() throws Exception {
-        perform("/xxx").andExpect(status().is4xxClientError());
+    private void performAndExpectValidButEmptyResponse(String urlFormat) 
+            throws Exception{
+        performAndExpectValidResponse(urlFormat)
+        .andExpect(content().string(is("")));
+    }
+    
+    private void performAndExpect404(String urlFormat) throws Exception{
+        ResultActions x = perform(urlFormat).andExpect(status().is(404));
+        expectContentType(x)
+        .andExpect(content().string(not(isEmptyOrNullString())));
     }
     
     @Test
-    public void validInvocation() throws Exception {
-        ResultActions x = perform("/%s?%s=%s")
-                         .andExpect(status().isOk());
-        x = expectContentType(x);
-        expectFirstCycleElement(x);
+    public void nonExistentResource() throws Exception {
+        performAndExpect404("/xxx");
     }
     
-    //@Test
-    public void t1() throws Exception {
-        String url = String.format("/%s?%s=%s", 
-                tripster.getName(), TripsterController.LegsTraveledQueryPar, 1);
+    @Test
+    public void wellFormedUrlButNonExistentResource() throws Exception {
+        performAndExpect404("/xxx?at=1");
+    }
+    
+    @Test
+    public void trailingSlash() throws Exception {
+        performAndExpectValidButEmptyResponse("/%s/");
+    }
+    // showTrip is hit b/c query param is defaulted to 0.
+
+    @Test
+    public void trailingQuestionMark() throws Exception {
+        performAndExpectValidButEmptyResponse("/%s?");
+    }
+    // showTrip is hit b/c query param is defaulted to 0.
+    
+    @Test
+    public void missingQuery() throws Exception {
+        performAndExpectValidButEmptyResponse("/%s");
+    }
+    // showTrip is hit b/c query param is defaulted to 0.
+    
+    @Test
+    public void missingQueryArg() throws Exception {
+        performAndExpectValidButEmptyResponse("/%s?%s");
+    }
+    // showTrip is hit b/c query param is defaulted to 0.
+    
+    @Test
+    public void missingQueryArgValue() throws Exception {
+        performAndExpectValidButEmptyResponse("/%s?%s=");
+    }
+    // showTrip is hit b/c query param is defaulted to 0.
+    
+    @Test
+    public void wellFormedUrlForExistingResource() throws Exception {
         String fstCycleElement = tripster.getCycle()[0];
         
-        mockMvc
-        .perform(get(url))
-        // .andDo(print())  // comment this in/out to see/hide Spring dump
-        .andExpect(status().isOk())
-        .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
-        .andExpect(content().encoding("UTF-8"))
+        performAndExpectValidResponse("/%s?%s=%s")
         .andExpect(content().string(containsString(fstCycleElement)));
     }
     
