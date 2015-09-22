@@ -1,5 +1,7 @@
 package util.spring.http;
 
+import static util.Arrayz.isNullOrZeroLength;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -25,7 +27,7 @@ public class ResponseEntities {
     
     private static <T> 
     ResponseEntity<T> newError(HttpStatus status, T[] maybeBody) {
-        if (maybeBody == null || maybeBody.length == 0) {
+        if (isNullOrZeroLength(maybeBody)) {
             return new ResponseEntity<>(status);
         }
         return new ResponseEntity<>(maybeBody[0], status);

@@ -24,6 +24,15 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     }
     
     /**
+     * Is the given array reference {@code null} or is the array length 0?
+     * @param ts the array to test.
+     * @return {@code true} for yes; {@code false} for no.
+     */
+    public static <T> boolean isNullOrZeroLength(T[] ts) {
+        return ts == null || ts.length == 0;
+    }
+    
+    /**
      * Creates a new array of generic {@link Pair}'s.
      * @param size the size of the array.
      * @return the new array.
