@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -30,16 +29,10 @@ public class TripsterControllerTest extends BaseWebTest {
         return doGet(url);
     }
     
-    private ResultActions expectContentType(ResultActions x) throws Exception {
-        return x
-        .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
-        .andExpect(content().encoding("UTF-8"));
-    }
-    
     private ResultActions performAndExpectValidResponse(String urlFormat) 
             throws Exception{
         ResultActions x = perform(urlFormat).andExpect(status().isOk());
-        return expectContentType(x);
+        return expectTextUtf8ContentType(x);
     }
     
     private void performAndExpectValidButEmptyResponse(String urlFormat) 
@@ -50,7 +43,7 @@ public class TripsterControllerTest extends BaseWebTest {
     
     private void performAndExpect404(String urlFormat) throws Exception{
         ResultActions x = perform(urlFormat).andExpect(status().is(404));
-        expectContentType(x)
+        expectTextUtf8ContentType(x)
         .andExpect(content().string(not(isEmptyOrNullString())));
     }
     
