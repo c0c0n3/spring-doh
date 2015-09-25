@@ -1,15 +1,49 @@
 package util.spring.http;
 
+import static java.util.Objects.requireNonNull;
 import static util.Arrayz.isNullOrZeroLength;
+
+import java.util.function.Supplier;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import util.Either;
 
 /**
  * Helper methods for {@link ResponseEntity}'s.
  */
 public class ResponseEntities {
 
+    /**
+     * Creates a new response with the supplied body; if the body is a right 
+     * value the response will be a 200, otherwise a 404.
+     * @param body either the content of a 200 (right value) or an error to
+     * output in the body of a 404. If {@code body == null}, a 404 will be 
+     * returned too.
+     * @return the response entity.
+     */
+    public static <E, R> ResponseEntity<Object> okOr404(Either<E, R> body) {
+        if (body == null) return _404();
+        return body.either(error -> _404((Object) error), 
+                           result -> ResponseEntity.ok((Object) result));
+    }
+    
+    /**
+     * Creates a new response with the supplied body; if the body is a right 
+     * value the response will be a 200, otherwise a 404.
+     * @param errorOrResult the response body producer. The produced body can
+     * either be the content of a 200 (right value) or an error to output in 
+     * the body of a 404. If the produced body is {@code null}, a 404 will be 
+     * returned too.
+     * @return the response entity.
+     */
+    public static <E, R> ResponseEntity<Object> okOr404(
+            Supplier<Either<E, R>> errorOrResult) {
+        requireNonNull(errorOrResult, "errorOrResult");
+        return okOr404(errorOrResult.get());
+    }
+    
     /**
      * Creates a new 404 response with an optional body.
      * If called with no arguments as in {@code _404()}, the response will have

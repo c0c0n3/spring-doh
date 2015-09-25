@@ -1,7 +1,9 @@
 package app.web;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static util.spring.http.ResponseEntities._404;
+import static util.Either.left;
+import static util.Either.right;
+import static util.spring.http.ResponseEntities.okOr404;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -33,28 +35,28 @@ public class TripsterController implements Identifiable {
     private TripsterSpotter<String> spotter;
     // NB will be shared across requests (!) as spotter is a singleton.
     
+    private String visualized() {
+        StringVisualizerBean<String> visualizer = 
+                (StringVisualizerBean<String>) spotter.getVisualizer();
+        return visualizer.getShown();
+    }
     
     @RequestMapping(value = "{" + TripsterNamePathVar + "}", method = GET)
-    public ResponseEntity<String> showTrip(
+    public ResponseEntity<Object> showTrip(
             @PathVariable(value=TripsterNamePathVar) 
             String tripsterName,
             @RequestParam(value=LegsTraveledQueryPar, defaultValue="0")  // (*) 
             int legsTraveled) {
-        
-        boolean found = spotter.showWhereIs(tripsterName, legsTraveled);
-        if (found) {
-            StringVisualizerBean<String> visualizer = 
-                    (StringVisualizerBean<String>) spotter.getVisualizer();
-            String shown = visualizer.getShown();
-            
-            return ResponseEntity.ok(shown);
-        }
-        return _404("tripster not found: " + tripsterName);
+        return okOr404(() -> {
+            boolean found = spotter.showWhereIs(tripsterName, legsTraveled);
+            return found ? right(visualized()) :
+                           left("tripster not found: " + tripsterName);
+        });
     }
     /* (*) without a default value the param becomes required and if the request
      * url doesn't have it, Spring MVC produces a 400 response without hitting
      * this method.
-     */ 
+     */
     
     @RequestMapping(value = TellIdPath, method = GET)
     @Override
