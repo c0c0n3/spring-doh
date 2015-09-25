@@ -1,10 +1,13 @@
 package util;
 
-import static java.util.Objects.*;
-import static java.util.stream.Collectors.*;
-import static java.util.stream.Stream.*;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.concat;
+import static java.util.stream.Stream.empty;
+import static java.util.stream.Stream.iterate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -178,6 +181,39 @@ public class Streams {
         reader.close();
         
         return lines.stream();
+    }
+    
+    /**
+     * Removes all {@code null}'s from the stream; if the stream itself is
+     * {@code null}, then the empty stream is returned.
+     * @param xs the stream to cleanse.
+     * @return the cleansed stream.
+     */
+    public static <T> Stream<T> pruneNull(Stream<T> xs) {
+        if (xs == null) return empty();
+        return xs.filter(x -> x != null);
+    }
+    
+    /**
+     * Removes all {@code null}'s from the list; if the list itself is
+     * {@code null}, then the empty stream is returned.
+     * @param xs the list to cleanse.
+     * @return the cleansed stream.
+     */
+    public static <T> Stream<T> pruneNull(List<T> xs) {
+        if (xs == null) return empty();
+        return pruneNull(xs.stream());
+    }
+    
+    /**
+     * Collects the given stream's elements into a list; if the stream is 
+     * {@code null}, then the empty list is returned.
+     * @param xs the stream to convert.
+     * @return the stream's elements collected into a list.
+     */
+    public static <T> List<T> asList(Stream<T> xs) {
+        if (xs == null) return Collections.emptyList();
+        return xs.collect(toList());
     }
     
 }

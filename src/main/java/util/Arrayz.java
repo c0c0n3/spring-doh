@@ -3,9 +3,11 @@ package util;
 import static java.util.Objects.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 
 /**
  * Convenience methods, mainly useful for testing {@link Streams} methods.
@@ -30,6 +32,20 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
      */
     public static <T> boolean isNullOrZeroLength(T[] ts) {
         return ts == null || ts.length == 0;
+    }
+    
+    /**
+     * Collects the given array's elements into a list; if the array is 
+     * {@code null}, then the empty list is returned.
+     * @param ts the array to convert.
+     * @return the array's elements collected into a list.
+     */
+    @SafeVarargs
+    public static <T> List<T> asList(T...ts) {
+        if (ts == null) {
+            ts = array();
+        }
+        return Arrays.asList(ts);
     }
     
     /**
@@ -146,6 +162,38 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
             mapped[k] = f.apply(k, list[k]);
         }
         return mapped;
+    }
+    
+    /**
+     * Collects the elements of the given list that satisfy the specified
+     * predicate. Elements are collected in the same order as they appear
+     * in the input list.
+     * @param p the test to decide which elements to take.
+     * @param list the input list.
+     * @return a new list with the elements that satisfy {@code p}.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public A[] filter(Predicate<A> p, A[] list) {
+        requireNonNull(p, "p");
+        requireNonNull(list, "list");
+        
+        ArrayList<A> filtered = new ArrayList<>(list.length);
+        for (int k = 0; k < list.length; ++k) {
+            if (p.test(list[k])) {
+                filtered.add(list[k]);
+            }
+        }
+        A[] result = generator.apply(filtered.size());
+        return filtered.toArray(result);
+    }
+    
+    /**
+     * Same as {@link Streams#pruneNull(List) Streams.pruneNull} but operating
+     * on arrays.
+     */
+    public A[] pruneNull(A[] list) {
+        if (list == null) return generator.apply(0);
+        return filter(x -> x != null, list);
     }
     
 }
