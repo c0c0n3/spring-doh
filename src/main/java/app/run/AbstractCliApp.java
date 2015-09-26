@@ -31,7 +31,10 @@ public abstract class AbstractCliApp implements RunnableApp {
      * @param legsTraveled hops away from the tripster's home. 
      */
     protected void runApp(String tripsterName, int legsTraveled) {
-        spotter().showWhereIs(tripsterName, legsTraveled);
+        boolean found = spotter().showWhereIs(tripsterName, legsTraveled);
+        if (!found) {
+            System.err.println("No such tripster: " + tripsterName);
+        }
     }
     
     @Override
