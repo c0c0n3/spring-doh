@@ -20,6 +20,13 @@ import app.beans.StringVisualizerBean;
 import app.config.Profiles;
 import app.core.trips.TripsterSpotter;
 
+/**
+ * Shows what legs of the trip a tripster has traveled so far.
+ * This controller mimics running the CLI apps in the {@code app.run} package
+ * with a tripster's name and number of hops away from the tripster's home.
+ * Additionally, you can GET id's of objects so we have something to play with
+ * in the tests for web beans life-cycle.
+ */
 @RestController  // includes @ResponseBody: return vals bound to response body.
 @RequestMapping("/")
 @Scope(WebApplicationContext.SCOPE_REQUEST)
@@ -50,7 +57,7 @@ public class TripsterController implements Identifiable {
         return okOr404(() -> {
             boolean found = spotter.showWhereIs(tripsterName, legsTraveled);
             return found ? right(visualized()) :
-                           left("tripster not found: " + tripsterName);
+                           left("No such tripster: " + tripsterName);
         });
     }
     /* (*) without a default value the param becomes required and if the request

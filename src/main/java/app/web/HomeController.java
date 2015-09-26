@@ -24,6 +24,14 @@ import util.Identifiable;
 import app.config.Profiles;
 import app.core.trips.TripsterSpotter;
 
+/**
+ * Prints out how to use the web app to find out what a tripster is up to.
+ * This controller mimics the 'usage' function of the CLI apps in the {@code 
+ * app.run} package.
+ * Additionally, you can GET id's and objects so we have something to play with
+ * in the tests for web beans life-cycle, content negotiation, and exception
+ * handling. 
+ */
 @RestController  // includes @ResponseBody: return vals bound to response body.
 @RequestMapping("/")
 @Profile(Profiles.WebApp)
