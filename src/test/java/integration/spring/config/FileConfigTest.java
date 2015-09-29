@@ -16,11 +16,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import app.config.FileTripsters;
 import app.config.Profiles;
 import app.config.Wiring;
 import app.config.data.DefaultTripsters;
 import app.config.data.TripstersYmlFile;
+import app.config.providers.FileTripsters;
 import app.run.TripstersYmlGen;
 
 

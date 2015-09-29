@@ -1,4 +1,4 @@
-package app.config;
+package app.config.providers;
 
 import java.util.stream.Stream;
 
@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import util.config.ConfigProvider;
+import app.config.Profiles;
 import app.config.data.DefaultTripsters;
 import app.config.items.TripsterConfig;
 

@@ -1,4 +1,4 @@
-package app.config;
+package app.config.providers;
 
 import java.io.InputStream;
 import java.util.stream.Stream;
@@ -9,6 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import app.config.Profiles;
 import app.config.items.TripsterConfig;
 import util.config.ConfigProvider;
 import util.config.YamlConverter;
