@@ -8,8 +8,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.ResultActions;
 
-import app.config.TripsterConfig;
 import app.config.data.DefaultTripsters;
+import app.config.items.TripsterConfig;
 import app.web.TripsterController;
 
 @RunWith(SpringJUnit4ClassRunner.class)

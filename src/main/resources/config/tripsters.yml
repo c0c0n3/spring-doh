@@ -1,12 +1,12 @@
-- !!app.config.TripsterConfig
+- !!app.config.items.TripsterConfig
   cycle: [0 (mod 5), 1 (mod 5), 2 (mod 5), 3 (mod 5), 4 (mod 5)]
   description: Ventures in numberland.
   name: gauss
-- !!app.config.TripsterConfig
+- !!app.config.items.TripsterConfig
   cycle: [Cape Town, Knysna, Durbs, Jozi]
   description: Tours South Africa.
   name: hipster
-- !!app.config.TripsterConfig
+- !!app.config.items.TripsterConfig
   cycle: [land mass 1, land mass 4, land mass 3, land mass 2]
   description: Crosses the bridges of Königsberg.
   name: euler

@@ -11,9 +11,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import util.config.ConfigProvider;
 import app.config.Profiles;
-import app.config.TripsterConfig;
 import app.config.Wiring;
 import app.config.data.DefaultTripsters;
+import app.config.items.TripsterConfig;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

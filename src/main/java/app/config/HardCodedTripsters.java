@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import util.config.ConfigProvider;
 import app.config.data.DefaultTripsters;
+import app.config.items.TripsterConfig;
 
 /**
  * Hard-coded {@link TripsterConfig} to use if no external config is provided 

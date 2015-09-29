@@ -3,8 +3,8 @@ package app.run;
 import java.util.List;
 
 import util.config.YamlConverter;
-import app.config.TripsterConfig;
 import app.config.data.TripstersYmlFile;
+import app.config.items.TripsterConfig;
 
 /**
  * Run this class redirecting {@code stdout} to 'config/tripsters.yml' to 

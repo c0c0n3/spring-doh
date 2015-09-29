@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import app.config.TripsterConfig;
+import app.config.items.TripsterConfig;
 
 /**
  * Hard-coded tripster data to use if no external config is provided or for 

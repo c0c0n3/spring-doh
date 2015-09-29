@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import app.config.TripsterConfig;
+import app.config.items.TripsterConfig;
 
 /**
  * The data that goes into 'config/tripsters.yml'.

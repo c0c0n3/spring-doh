@@ -16,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import util.config.ConfigProvider;
 import app.aspects.ArrayCycleFix;
 import app.beans.StdoutVisualizerBean;
+import app.config.items.TripsterConfig;
 import app.core.cyclic.CycleVisualizer;
 import app.core.trips.Tripster;
 import app.core.trips.TripsterGroup;

@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import util.config.ConfigItemMapper;
 import util.config.ConfigProvider;
+import app.config.items.TripsterConfig;
 import app.core.cyclic.ArrayCycle;
 import app.core.cyclic.Cycle;
 import app.core.trips.Tripster;

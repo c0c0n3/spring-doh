@@ -1,4 +1,4 @@
-package app.config;
+package app.config.items;
 
 import java.util.Arrays;
 import java.util.Objects;
