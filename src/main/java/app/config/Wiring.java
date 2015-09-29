@@ -1,5 +1,7 @@
 package app.config;
 
+import static util.Streams.asList;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +43,9 @@ public class Wiring {
     
     @Bean
     public TripsterSpotter<String> tripsterSpotter() {
-        List<Tripster<String>> happyBunch = TripsterConfigMapper
-                .newWithStringArray()
-                .fromConfig(tripsties);
+        List<Tripster<String>> happyBunch = asList(
+                TripsterConfigMapper.newWithStringArray()
+                                    .defaultFromConfig(tripsties));
         
         return new TripsterSpotter<>(new TripsterGroup<>(happyBunch),
                                      sharedVisualizer);

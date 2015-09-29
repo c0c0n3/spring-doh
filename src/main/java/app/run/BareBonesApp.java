@@ -1,5 +1,7 @@
 package app.run;
 
+import static util.Streams.asList;
+
 import java.util.List;
 
 import app.config.HardCodedTripsters;
@@ -28,9 +30,9 @@ public class BareBonesApp extends AbstractCliApp {
     @SuppressWarnings("unchecked")
     @Override
     protected TripsterSpotter<String> spotter() {
-        List<Tripster<String>> happyBunch = TripsterConfigMapper
-                .newWithStringArray()
-                .fromConfig(new HardCodedTripsters());
+        List<Tripster<String>> happyBunch = asList(
+            TripsterConfigMapper.newWithStringArray()
+                                .defaultFromConfig(new HardCodedTripsters()));
 
         return new TripsterSpotter<>(new TripsterGroup<>(happyBunch),
                                      new StdoutVisualizer<>());
