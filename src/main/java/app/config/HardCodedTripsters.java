@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import util.config.ConfigProvider;
 import app.config.data.DefaultTripsters;
 
 /**

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import util.config.ConfigProvider;
 import app.aspects.ArrayCycleFix;
 import app.beans.StdoutVisualizerBean;
 import app.core.cyclic.CycleVisualizer;

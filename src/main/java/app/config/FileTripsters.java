@@ -9,6 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import util.config.ConfigProvider;
 import util.config.YamlConverter;
 import util.lambda.FunctionE;
 import util.spring.io.FifoResourceLoaderAdapter;

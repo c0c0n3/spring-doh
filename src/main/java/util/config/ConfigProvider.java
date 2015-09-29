@@ -1,4 +1,4 @@
-package app.config;
+package util.config;
 
 import static util.Exceptions.unchecked;
 

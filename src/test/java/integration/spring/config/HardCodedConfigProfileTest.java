@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import app.config.ConfigProvider;
+import util.config.ConfigProvider;
 import app.config.Profiles;
 import app.config.TripsterConfig;
 import app.config.Wiring;
