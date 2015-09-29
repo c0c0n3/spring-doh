@@ -216,4 +216,14 @@ public class Streams {
         return xs.collect(toList());
     }
     
+    /**
+     * Returns empty if the argument is {@code null}, otherwise the argument
+     * itself.
+     * @param xs a possibly {@code null} reference.
+     * @return {@code xs} if not {@code null}, an empty stream otherwise. 
+     */
+    public static <T> Stream<T> emptyIfNull(Stream<T> xs) {
+        return xs == null ? Stream.empty() : xs;
+    }
+    
 }

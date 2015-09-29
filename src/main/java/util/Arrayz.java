@@ -4,10 +4,12 @@ import static java.util.Objects.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Convenience methods, mainly useful for testing {@link Streams} methods.
@@ -42,10 +44,18 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
      */
     @SafeVarargs
     public static <T> List<T> asList(T...ts) {
-        if (ts == null) {
-            ts = array();
-        }
-        return Arrays.asList(ts);
+        return ts == null ? Collections.emptyList() : Arrays.asList(ts);
+    }
+    
+    /**
+     * Collects the given array's elements into a stream; if the array is 
+     * {@code null}, then the empty stream is returned.
+     * @param ts the array to convert.
+     * @return the array's elements collected into a stream.
+     */
+    @SafeVarargs
+    public static <T> Stream<T> asStream(T...ts) {
+        return ts == null ? Stream.empty() : Stream.of(ts);
     }
     
     /**
