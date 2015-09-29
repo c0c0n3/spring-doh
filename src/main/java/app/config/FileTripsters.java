@@ -9,6 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import util.config.YamlConverter;
 import util.lambda.FunctionE;
 import util.spring.io.FifoResourceLoaderAdapter;
 
@@ -53,7 +54,7 @@ public class FileTripsters implements ConfigProvider<List<TripsterConfig>> {
      * falling back to hard-coded config if no file is available.
      */
     public List<TripsterConfig> readConfig(String...loci) throws Exception {
-        TripsterConfigYaml reader = new TripsterConfigYaml();
+        YamlConverter<TripsterConfig> reader = new YamlConverter<TripsterConfig>();
         HardCodedTripsters fallback = new HardCodedTripsters();
         FunctionE<Resource, InputStream> getResourceStreamOrThrowIoE = 
                                                     Resource::getInputStream;
@@ -61,7 +62,7 @@ public class FileTripsters implements ConfigProvider<List<TripsterConfig>> {
         return new FifoResourceLoaderAdapter(resourceLoader)
                     .selectResource(loci)
                     .map(getResourceStreamOrThrowIoE)  // (*) see note below
-                    .map(reader::fromYaml)
+                    .map(reader::fromYamlList)
                     .orElse(fallback.defaultReadConfig());
     }
 }
