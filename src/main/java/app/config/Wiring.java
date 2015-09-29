@@ -36,7 +36,7 @@ public class Wiring {
     private CycleVisualizer<String> sharedVisualizer;
     
     @Autowired
-    private ConfigProvider<List<TripsterConfig>> tripsties;
+    private ConfigProvider<TripsterConfig> tripsties;
     
     
     @Bean

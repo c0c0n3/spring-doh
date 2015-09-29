@@ -1,7 +1,7 @@
 package app.config;
 
 import java.io.InputStream;
-import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -25,7 +25,7 @@ import util.spring.io.FifoResourceLoaderAdapter;
  */
 @Component
 @Profile(Profiles.ConfigFile)
-public class FileTripsters implements ConfigProvider<List<TripsterConfig>> {
+public class FileTripsters implements ConfigProvider<TripsterConfig> {
 
     /**
      * Location of the YAML file in the classpath.
@@ -46,7 +46,7 @@ public class FileTripsters implements ConfigProvider<List<TripsterConfig>> {
      * @return all configured tripsters; never {@code null}.
      */
     @Override
-    public List<TripsterConfig> readConfig() throws Exception {
+    public Stream<TripsterConfig> readConfig() throws Exception {
         return readConfig(PwdConfig, ClasspathConfig);
     }
     
@@ -54,7 +54,7 @@ public class FileTripsters implements ConfigProvider<List<TripsterConfig>> {
      * Reads config from the first available out of the specified locations,
      * falling back to hard-coded config if no file is available.
      */
-    public List<TripsterConfig> readConfig(String...loci) throws Exception {
+    public Stream<TripsterConfig> readConfig(String...loci) throws Exception {
         YamlConverter<TripsterConfig> reader = new YamlConverter<TripsterConfig>();
         HardCodedTripsters fallback = new HardCodedTripsters();
         FunctionE<Resource, InputStream> getResourceStreamOrThrowIoE = 
@@ -64,6 +64,7 @@ public class FileTripsters implements ConfigProvider<List<TripsterConfig>> {
                     .selectResource(loci)
                     .map(getResourceStreamOrThrowIoE)  // (*) see note below
                     .map(reader::fromYamlList)
+                    .map(xs -> xs.isEmpty() ? null : xs.stream())
                     .orElse(fallback.defaultReadConfig());
     }
 }

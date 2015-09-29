@@ -55,12 +55,11 @@ public class TripsterConfigMapper<T> {
      * configuration.
      */
     public List<Tripster<T>> fromConfig(
-            ConfigProvider<List<TripsterConfig>> provider) {
+            ConfigProvider<TripsterConfig> provider) {
         requireNonNull(provider, "provider");
         
         return provider
               .defaultReadConfig()
-              .stream()
               .map(this::newTripster)
               .collect(toList());
     }

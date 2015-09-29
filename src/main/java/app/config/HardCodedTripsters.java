@@ -1,6 +1,6 @@
 package app.config;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -14,15 +14,15 @@ import app.config.data.DefaultTripsters;
  */
 @Component
 @Profile(Profiles.HardCodedConfig)
-public class HardCodedTripsters implements ConfigProvider<List<TripsterConfig>> {
+public class HardCodedTripsters implements ConfigProvider<TripsterConfig> {
     
     /**
      * The happy bunch of tripsters hard-coded in this configuration.
      * @return all configured tripsters; never {@code null}.
      */
     @Override
-    public List<TripsterConfig> readConfig() {
-        return DefaultTripsters.tripsters;
+    public Stream<TripsterConfig> readConfig() {
+        return DefaultTripsters.tripsters.stream();
     }
     
 }

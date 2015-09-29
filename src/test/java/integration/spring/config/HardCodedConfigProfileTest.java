@@ -2,8 +2,6 @@ package integration.spring.config;
 
 import static org.junit.Assert.*;
 
-import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,7 @@ import app.config.data.DefaultTripsters;
 public class HardCodedConfigProfileTest {
 
     @Autowired
-    private ConfigProvider<List<TripsterConfig>> configProvider;
+    private ConfigProvider<TripsterConfig> configProvider;
     
     @Test
     public void defaultTripstersWhenHardCodedConfigProfile() throws Exception {
