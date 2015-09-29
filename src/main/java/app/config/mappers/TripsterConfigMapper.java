@@ -1,4 +1,4 @@
-package app.config;
+package app.config.mappers;
 
 import static java.util.Objects.requireNonNull;
 

@@ -4,7 +4,7 @@ import static util.Streams.asList;
 
 import java.util.List;
 
-import app.config.TripsterConfigMapper;
+import app.config.mappers.TripsterConfigMapper;
 import app.config.providers.HardCodedTripsters;
 import app.core.cyclic.StdoutVisualizer;
 import app.core.trips.Tripster;
