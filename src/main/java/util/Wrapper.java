@@ -7,7 +7,7 @@ import java.util.function.Supplier;
  * just like the wrapped value in terms of {@link #equals(Object) equality}, 
  * {@link #hashCode() hashing}, and {@link #toString() string conversion}.
  */
-public class Wrapper<T> implements Supplier<T> {
+public class Wrapper<T> extends AbstractWrapper<T> {
 
     protected final T wrappedValue;
     
@@ -27,34 +27,4 @@ public class Wrapper<T> implements Supplier<T> {
         return wrappedValue;
     }
     
-    /**
-     * Implemented by delegating to the wrapped value except when {@code null},
-     * in which case the value of {@code other == null} is returned.
-     */
-    @Override 
-    public boolean equals(Object other) {
-        if (wrappedValue != null) {
-            return wrappedValue.equals(other);
-        }
-        return other == null;
-    }
-    
-    /**
-     * Implemented by delegating to the wrapped value except when {@code null},
-     * in which case {@code 0} is returned.
-     */
-    @Override 
-    public int hashCode() {
-        return wrappedValue == null ? 0 : wrappedValue.hashCode();
-    }
-    
-    /**
-     * Implemented by delegating to the wrapped value except when {@code null},
-     * in which case the string "null" is returned.
-     */
-    @Override
-    public String toString() {
-        return String.valueOf(wrappedValue);  // caters for null
-    }
-
 }
