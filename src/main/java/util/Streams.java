@@ -7,6 +7,7 @@ import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.iterate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -221,6 +222,17 @@ public class Streams {
     public static <T> Stream<T> pruneNull(List<T> xs) {
         if (xs == null) return empty();
         return pruneNull(xs.stream());
+    }
+    
+    /**
+     * Removes all {@code null}'s from the array; if the array itself is
+     * {@code null}, then the empty stream is returned.
+     * @param xs the array to cleanse.
+     * @return the cleansed stream.
+     */
+    public static <T> Stream<T> pruneNull(T[] xs) {
+        if (xs == null) return empty();
+        return pruneNull(Arrays.stream(xs));
     }
     
     /**
