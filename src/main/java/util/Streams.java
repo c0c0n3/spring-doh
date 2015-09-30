@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
@@ -163,6 +164,23 @@ public class Streams {
     // ya, could be done using zipWith (e.g. map f = zipWith f [0..]) but the
     // implementation is more complicated and has worse performance than the 
     // code above!
+    
+    /**
+     * Interleaves the elements of the given stream with the specified 
+     * separator.
+     * For example (pseudo code) {@code intersperse(0,[1,2,3]) = [1,0,2,0,3]}.
+     * @param sep the value to put in between stream elements; ideally this 
+     * should be a new object for each slot.
+     * @param xs the elements to interleave.
+     * @return the interleaved list.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static <X> Stream<X> intersperse(Supplier<X> sep, Stream<X> xs) {
+        requireNonNull(sep, "sep");
+        requireNonNull(xs, "xs");
+        
+        return xs.flatMap(x -> Stream.of(sep.get(), x)).skip(1);
+    }
     
     /**
      * Breaks up the given text into lines.

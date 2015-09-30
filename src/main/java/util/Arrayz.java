@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -34,6 +35,22 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
      */
     public static <T> boolean isNullOrZeroLength(T[] ts) {
         return ts == null || ts.length == 0;
+    }
+    
+    /**
+     * Does the given array hold any {@code null} reference?
+     * @param ts the array to test.
+     * @return {@code true} if the array has at least length 1 and one of its
+     * elements is {@code null}; {@code false} if the array is {@code null}, 
+     * or has no elements, or all of its elements are not {@code null}. 
+     */
+    public static <T> boolean hasNulls(T[] ts) {
+        if (!isNullOrZeroLength(ts)) {
+            for (int k = 0; k < ts.length; ++k) {
+                if (ts[k] == null) return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -196,6 +213,43 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
         A[] result = generator.apply(filtered.size());
         return filtered.toArray(result);
     }
+    
+    /**
+     * Same as {@link Streams#intersperse(Object, Stream) Streams.intersperse} 
+     * but operating on arrays.
+     */
+    public A[] intersperse(Supplier<A> sep, A[] list) {
+        requireNonNull(sep, "sep");
+        requireNonNull(list, "list");
+        
+        int q = Math.max(list.length - 1, 0);
+        int sz = list.length + q;
+        A[] interspersed = generator.apply(sz);
+        
+        if (list.length > 0) {
+            int k = 0;
+            for (; k < q; ++k) {
+                interspersed[2*k] = list[k];
+                interspersed[2*k + 1] = sep.get();
+            }
+            interspersed[2 * k] = list[k];    
+        }
+
+        return interspersed;
+    }
+    /* [a, /, /, null, c]
+     * 
+     * 0 1 2 3 4
+     * a / b / c
+     * 0   1   2
+     */
+    
+    // 0 1 2 3 4 5 6 7 8
+    // a , b , c , d , e
+    // 0   1   2   3   4
+    
+    // 0 1 2 3
+    // 0 0 1 2
     
     /**
      * Same as {@link Streams#pruneNull(List) Streams.pruneNull} but operating
