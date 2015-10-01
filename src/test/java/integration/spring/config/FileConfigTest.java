@@ -1,6 +1,8 @@
 package integration.spring.config;
 
 import static org.junit.Assert.*;
+import static util.spring.io.ResourceLocation.classpath;
+import static util.spring.io.ResourceLocation.filepathFromCwd;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import util.spring.io.ResourceLocation;
 import app.config.Profiles;
 import app.config.Wiring;
 import app.config.data.DefaultTripsters;
@@ -47,7 +50,7 @@ public class FileConfigTest {
         return fileContents;
     }
     
-    private String writeTripstersYml() throws IOException {
+    private ResourceLocation writeTripstersYml() throws IOException {
         String fileContents = generateTripstersYaml();
         
         String fileName = "tripsters.yml";
@@ -57,12 +60,12 @@ public class FileConfigTest {
         out.close();
         
         String configDirName = configDirUnderPwd.getRoot().getName();
-        return "file:./" + configDirName + "/" + fileName;
+        return filepathFromCwd(configDirName, fileName);
     }
     
     @Test
     public void readConfigFileFromConfigDirUnderPwd() throws Exception {
-        String pathRelativeToPwd = writeTripstersYml();
+        ResourceLocation pathRelativeToPwd = writeTripstersYml();
         
         Object[] actual = configProvider.readConfig(pathRelativeToPwd)
                                         .toArray();
@@ -73,11 +76,13 @@ public class FileConfigTest {
     
     @Test
     public void defaultToHardCodedConfigIfNoOtherAvailable() throws Exception {
-        Object[] actual = configProvider.readConfig("some", "nonsense")
-                                        .toArray();
+        Object[] actual = configProvider
+                         .readConfig(classpath("some"), classpath("nonsense"))
+                         .toArray();
         Object[] expected = DefaultTripsters.tripsters.toArray();
         
         assertArrayEquals(expected, actual);
     }
     
 }
+

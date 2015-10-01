@@ -1,10 +1,12 @@
 package util.config;
 
 import static java.util.Objects.requireNonNull;
+import static util.Streams.asStream;
 
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -46,10 +48,11 @@ public class YamlConverter<T> {
      * @throws NullPointerException if any argument is {@code null}.
      */
     @SuppressWarnings("unchecked")
-    public List<T> fromYamlList(InputStream input) {
+    public Stream<T> fromYamlList(InputStream input) {
         requireNonNull(input, "input");
         
-        return new Yaml().loadAs(input, List.class);
+        List<T> ts = new Yaml().loadAs(input, List.class); 
+        return asStream(ts);
     }
 
     /**

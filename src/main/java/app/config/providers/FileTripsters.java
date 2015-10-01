@@ -1,20 +1,23 @@
 package app.config.providers;
 
-import java.io.InputStream;
+import static util.spring.io.ResourceLocation.classpath;
+import static util.spring.io.ResourceLocation.filepathFromCwd;
+
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import app.config.Profiles;
 import app.config.items.TripsterConfig;
 import util.config.ConfigProvider;
+import util.config.FallbackConfigProvider;
 import util.config.YamlConverter;
-import util.lambda.FunctionE;
+import util.spring.config.LociResourceConfigProvider;
 import util.spring.io.FifoResourceLoaderAdapter;
+import util.spring.io.ResourceLocation;
 
 
 /**
@@ -32,13 +35,15 @@ public class FileTripsters implements ConfigProvider<TripsterConfig> {
     /**
      * Location of the YAML file in the classpath.
      */
-    public static final String ClasspathConfig = 
-            ResourceLoader.CLASSPATH_URL_PREFIX + "/config/tripsters.yml";
+    public static final ResourceLocation ClasspathConfig = 
+            classpath("config", "tripsters.yml");
     
     /**
      * Location of the YAML file in the current directory.
      */
-    public static final String PwdConfig = "file:./tripsters.yml";
+    public static final ResourceLocation PwdConfig = 
+            filepathFromCwd("tripsters.yml"); 
+
     
     @Autowired
     private ResourceLoader resourceLoader;
@@ -56,33 +61,20 @@ public class FileTripsters implements ConfigProvider<TripsterConfig> {
      * Reads config from the first available out of the specified locations,
      * falling back to hard-coded config if no file is available.
      */
-    public Stream<TripsterConfig> readConfig(String...loci) throws Exception {
-        YamlConverter<TripsterConfig> reader = new YamlConverter<TripsterConfig>();
-        HardCodedTripsters fallback = new HardCodedTripsters();
-        FunctionE<Resource, InputStream> getResourceStreamOrThrowIoE = 
-                                                    Resource::getInputStream;
+    public Stream<TripsterConfig> readConfig(ResourceLocation...loci) 
+            throws Exception {
+        ConfigProvider<TripsterConfig> source = 
+                new LociResourceConfigProvider<>(
+                        new FifoResourceLoaderAdapter(resourceLoader), 
+                        new YamlConverter<TripsterConfig>()::fromYamlList, 
+                        loci);
         
-        return new FifoResourceLoaderAdapter(resourceLoader)
-                    .selectResource(loci)
-                    .map(getResourceStreamOrThrowIoE)  // (*) see note below
-                    .map(reader::fromYamlList)
-                    .map(xs -> xs.isEmpty() ? null : xs.stream())
-                    .orElse(fallback.defaultReadConfig());
+        ConfigProvider<TripsterConfig> sourceOrFallback =
+                new FallbackConfigProvider<>(
+                        source, 
+                        new HardCodedTripsters()::defaultReadConfig);
+        
+        return sourceOrFallback.readConfig();
     }
+    
 }
-/* NOTE. 
- * replacing: .map(getResourceStreamOrThrowIoE)
- *      with: .map(unchecked(Resource::getInputStream))
- * or for that matter
-     FunctionE<Resource, InputStream> getResourceStreamOrThrowIoE = 
-                                                Resource::getInputStream;
- * with
-     Function<Resource, InputStream> getResourceStreamOrThrowIoE = 
-                                    unchecked(Resource::getInputStream);
-                                    
- * will confuse the hell out of the eclipse compiler when trying to do type 
- * inference, so it won't compile in eclipse, but it will in OpenJDK 1.8. 
- * Looks like I'm not alone tho as Java's typsie infirmity has caused some
- * headaches to the surgeons over here too:
- * - https://bugs.eclipse.org/bugs/show_bug.cgi?id=461004 
- */

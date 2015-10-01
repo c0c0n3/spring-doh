@@ -247,6 +247,16 @@ public class Streams {
     }
     
     /**
+     * Collects the given list's elements into a stream; if the list is {@code
+     * null}, then the empty stream is returned.
+     * @param xs the list to convert.
+     * @return the list's elements collected into a stream.
+     */
+    public static <T> Stream<T> asStream(List<T> xs) {
+        return xs == null ? Stream.empty() : xs.stream();
+    }
+    
+    /**
      * Returns empty if the argument is {@code null}, otherwise the argument
      * itself.
      * @param xs a possibly {@code null} reference.
