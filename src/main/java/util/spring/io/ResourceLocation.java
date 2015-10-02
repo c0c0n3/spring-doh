@@ -21,6 +21,22 @@ import util.AbstractWrapper;
 public class ResourceLocation extends AbstractWrapper<String> {
 
     /**
+     * Builds a relative path location string from the path.
+     * E.g. {@code relpath("x", "y") => x/y}.
+     * @param pathComponents the path components. They will be converted to a
+     * string using their {@code toString} method; any resulting empty string
+     * will be removed from the path.
+     * @return the location.
+     * @throws IllegalArgumentException if the path component array is {@code 
+     * null} or empty, or any of the path components is {@code null}, or all
+     * path components evaluate to the empty string, or the path is not that 
+     * of a valid {@link URI}.
+     */
+    public static ResourceLocation relpath(Object...pathComponents) {
+        return new ResourceLocation("", false, pathComponents);
+    }
+    
+    /**
      * Builds a file location string from the path.
      * E.g. {@code filepath("x", "y") => file:/x/y}.
      * @param pathComponents the path components. They will be converted to a
@@ -70,8 +86,10 @@ public class ResourceLocation extends AbstractWrapper<String> {
                                     pathComponents);
     }
     
-    private static String build(String scheme, Object...pathComponents) {
-        String schemeSpecificPart = buildPath(pathComponents);
+    private static String build(String scheme, 
+                                boolean absolute, 
+                                Object...pathComponents) {
+        String schemeSpecificPart = buildPath(absolute, pathComponents);
         try {
             URI location = new URI(scheme + schemeSpecificPart);
             return location.toString();
@@ -82,7 +100,7 @@ public class ResourceLocation extends AbstractWrapper<String> {
         } 
     }
     
-    private static String buildPath(Object...pathComponents) {
+    private static String buildPath(boolean absolute, Object...pathComponents) {
         if (isNullOrZeroLength(pathComponents)) {
             throw new IllegalArgumentException("no path components");
         }
@@ -102,15 +120,21 @@ public class ResourceLocation extends AbstractWrapper<String> {
             throw new IllegalArgumentException("all path components are empty");
         }
         
-        return "/" + joined;
+        return absolute ? "/" + joined : joined;
     }
 
     private final String location;
     
     private ResourceLocation(String scheme, Object...pathComponents) {
-        location = build(scheme, pathComponents);
+        this(scheme, true, pathComponents);
     }
 
+    private ResourceLocation(String scheme, 
+                             boolean absolutePath, 
+                             Object...pathComponents) {
+        location = build(scheme, absolutePath, pathComponents);
+    }
+    
     @Override
     public String get() {
         return location;

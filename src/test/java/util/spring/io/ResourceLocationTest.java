@@ -35,6 +35,27 @@ public class ResourceLocationTest {
         assertThat(actual, is(expected));
     }
     
+    @Test(expected = IllegalArgumentException.class)
+    public void relpathNoComponents() {
+        ResourceLocation.relpath();
+    }
+    
+    @Test
+    public void relpathOneComponent() {
+        String actual = ResourceLocation.relpath("1").get();
+        String expected = "1";
+        
+        assertThat(actual, is(expected));
+    }
+    
+    @Test
+    public void relpathTwoComponents() {
+        String actual = ResourceLocation.relpath("1", "2").get();
+        String expected = "1/2";
+        
+        assertThat(actual, is(expected));
+    }
+    
     @Test
     public void filepathOneComponent() {
         String actual = ResourceLocation.filepath("1").get();

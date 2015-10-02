@@ -1,6 +1,7 @@
 package util.spring.io;
 
 import static java.util.Objects.requireNonNull;
+import static util.Streams.pruneNull;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -50,8 +51,9 @@ public class FifoResourceLoaderAdapter implements LociResourceLoader {
      * returned.
      */
     @Override
-    public Optional<Resource> selectResource(String...loci) {
-        return Optional.ofNullable(loci).flatMap(this::select);
+    public Optional<Resource> selectResource(ResourceLocation...loci) {
+        String[] xs = pruneNull(loci).map(l -> l.get()).toArray(String[]::new);
+        return select(xs);
     }
     
     /**

@@ -36,7 +36,7 @@ public class FifoResourceLoaderAdapterTest {
     
     @DataPoints
     public static String[] availabilities = 
-            array(null, "", Exists, CanRead, Available);
+            array(null, Exists, CanRead, Available);
     
     
     // [a0, a1, ...] ==> [rez(0, a0), rez(1, a1), ...]
@@ -52,9 +52,9 @@ public class FifoResourceLoaderAdapterTest {
         return new FifoResourceLoaderAdapter(loader);
     }
     
-    // [a0, null, a2, "", a4, ...] ==> [0, null, 2, "", 4, ...]
-    // i.e. keep any null or empty
-    private static String[] index(String...availability) {
+    // [a0, null, a2, null, a4, ...] ==> [0, null, 2, null, 4, ...]
+    // i.e. keep any null
+    private static ResourceLocation[] index(String...availability) {
         return Stream.of(Arrayz.zipIndex(availability))
                      .map(p -> {
                          Integer ix = p.fst();
@@ -62,14 +62,16 @@ public class FifoResourceLoaderAdapterTest {
                          
                          return isNullOrEmpty(aval) ? aval : ix.toString();
                      })
-                     .toArray(String[]::new);
+                     .map(ix -> isNullOrEmpty(ix) ? null : 
+                                                 ResourceLocation.relpath(ix))
+                     .toArray(ResourceLocation[]::new);
     }
     
     private static Optional<Resource> invoke(
             boolean nullResourceHandle, String...availability) {
         LociResourceLoader target = nullResourceHandle ? 
                                     newRezLdr() : newRezLdr(availability);
-        String[] loci = index(availability);
+        ResourceLocation[] loci = index(availability);
         return target.selectResource(loci);
     }
     
@@ -135,7 +137,8 @@ public class FifoResourceLoaderAdapterTest {
     @Test
     public void absentResourceWhenNullLoci() {
         LociResourceLoader target = newRezLdr(Available);
-        Optional<Resource> actual = target.selectResource((String[])null);
+        Optional<Resource> actual = target
+                                   .selectResource((ResourceLocation[])null);
         
         assertNotNull(actual);
         assertFalse(actual.isPresent());
