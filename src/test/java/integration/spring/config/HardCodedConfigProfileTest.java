@@ -27,7 +27,7 @@ public class HardCodedConfigProfileTest {
     @Test
     public void defaultTripstersWhenHardCodedConfigProfile() throws Exception {
         Object[] actual = configProvider.readConfig().toArray();
-        Object[] expected = DefaultTripsters.tripsters.toArray();
+        Object[] expected = new DefaultTripsters().readConfig().toArray();
         
         assertArrayEquals(expected, actual);
     }

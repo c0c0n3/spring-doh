@@ -1,15 +1,15 @@
 package app.config.data;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import util.config.ConfigProvider;
 import app.config.items.TripsterConfig;
 
 /**
  * The data that goes into 'config/tripsters.yml'.
  */
-public class TripstersYmlFile {
+public class TripstersYmlFile implements ConfigProvider<TripsterConfig> {
 
     /**
      * Crosses the bridges of Königsberg.
@@ -28,8 +28,10 @@ public class TripstersYmlFile {
     /**
      * All the tripsters in this configuration.
      */
-    public static List<TripsterConfig> tripsters = 
-            Arrays.asList(DefaultTripsters.gauss(), DefaultTripsters.hipster(),
-                          euler());
+    @Override
+    public Stream<TripsterConfig> readConfig() {
+        return Stream.of(DefaultTripsters.gauss(), DefaultTripsters.hipster(),
+                         euler());
+    }
 
 }

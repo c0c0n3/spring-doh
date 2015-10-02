@@ -21,8 +21,11 @@ public class UndertowYmlGen implements RunnableApp {
      */
     @Override
     public void run(List<String> appArgs) {
-        String yaml = new YamlConverter<UndertowConfig>()
-                     .toYaml(UndertowYmlFile.contents);
+        UndertowConfig fileContents = new UndertowYmlFile()
+                                     .readConfig()
+                                     .findFirst()
+                                     .get();
+        String yaml = new YamlConverter<UndertowConfig>().toYaml(fileContents);
         System.out.print(yaml); 
     }
 

@@ -2,17 +2,17 @@ package app.config.data;
 
 import static util.Arrayz.array;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+import util.config.ConfigProvider;
 import app.config.items.TripsterConfig;
 
 /**
  * Hard-coded tripster data to use if no external config is provided or for 
  * testing.
  */
-public class DefaultTripsters {
+public class DefaultTripsters implements ConfigProvider<TripsterConfig> {
 
     /**
      * Ventures in numberland.
@@ -40,7 +40,9 @@ public class DefaultTripsters {
     /**
      * All the tripsters in this configuration.
      */
-    public static List<TripsterConfig> tripsters = 
-            Arrays.asList(gauss(), hipster());
+    @Override
+    public Stream<TripsterConfig> readConfig() {
+        return Stream.of(gauss(), hipster());
+    }
     
 }

@@ -40,7 +40,7 @@ public abstract class FifoResource<T> {
      * can be found in all of the specified resource locations.
      * @return the fall-back objects to use.
      */
-    protected Stream<T> getFallback() {
+    public Stream<T> getFallback() {
         return Stream.empty();
     }
 

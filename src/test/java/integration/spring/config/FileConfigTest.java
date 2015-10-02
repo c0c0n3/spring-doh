@@ -11,26 +11,15 @@ import java.io.PrintWriter;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.OutputCapture;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import util.config.ConfigProvider;
 import util.spring.io.ResourceLocation;
-import app.config.Profiles;
-import app.config.Wiring;
-import app.config.data.DefaultTripsters;
-import app.config.data.TripstersYmlFile;
-import app.config.providers.FileTripsters;
-import app.run.TripstersYmlGen;
+import app.config.providers.PriorityConfigProvider;
+import app.run.RunnableApp;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=Wiring.class)
-@ActiveProfiles({Profiles.ConfigFile})
-public class FileConfigTest {
+public abstract class FileConfigTest<T> {
     
     @Rule
     public OutputCapture generatedConfig = new OutputCapture();
@@ -38,24 +27,25 @@ public class FileConfigTest {
     @Rule
     public TemporaryFolder configDirUnderPwd = new TemporaryFolder(new File("./"));
     
-    @Autowired
-    private FileTripsters configProvider;
+    protected abstract PriorityConfigProvider<T> getConfigProvider();
     
+    protected abstract RunnableApp getFileGenerator();
     
-    private String generateTripstersYaml() {
-        TripstersYmlGen app = new TripstersYmlGen();
-        app.run(null);
+    protected abstract ConfigProvider<T> getFileContents();
+    
+    protected String generateFile() {
+        getFileGenerator().run(null);
         
         String fileContents = generatedConfig.toString();
         return fileContents;
     }
     
-    private ResourceLocation writeTripstersYml() throws IOException {
-        String fileContents = generateTripstersYaml();
+    protected ResourceLocation writeFile() throws IOException {
+        String fileContents = generateFile();
         
-        String fileName = "tripsters.yml";
-        File tripstersYml = configDirUnderPwd.newFile(fileName);
-        PrintWriter out = new PrintWriter(tripstersYml);
+        String fileName = getConfigProvider().getConfigFileName();
+        File configFile = configDirUnderPwd.newFile(fileName);
+        PrintWriter out = new PrintWriter(configFile);
         out.print(fileContents);
         out.close();
         
@@ -65,24 +55,25 @@ public class FileConfigTest {
     
     @Test
     public void readConfigFileFromConfigDirUnderPwd() throws Exception {
-        ResourceLocation pathRelativeToPwd = writeTripstersYml();
+        ResourceLocation pathRelativeToPwd = writeFile();
         
-        Object[] actual = configProvider.readConfig(pathRelativeToPwd)
-                                        .toArray();
-        Object[] expected = TripstersYmlFile.tripsters.toArray();
+        Object[] actual = getConfigProvider()
+                         .readConfig(pathRelativeToPwd)
+                         .toArray();
+        Object[] expected = getFileContents().readConfig().toArray();
         
         assertArrayEquals(expected, actual);
     }
     
     @Test
     public void defaultToHardCodedConfigIfNoOtherAvailable() throws Exception {
-        Object[] actual = configProvider
+        
+        Object[] actual = getConfigProvider()
                          .readConfig(classpath("some"), classpath("nonsense"))
                          .toArray();
-        Object[] expected = DefaultTripsters.tripsters.toArray();
+        Object[] expected = getConfigProvider().getFallback().toArray();
         
         assertArrayEquals(expected, actual);
     }
     
 }
-

@@ -13,11 +13,10 @@ import util.spring.io.ResourceReader;
 
 /**
  * Reads tripster configuration from a YAML file, falling back to hard-coded
- * configuration if no file is avaliable.
- * This provider will first try to read the file from the {@link #PwdConfig
- * current directory}; failing that, it will try to find the file in the
- * {@link #ClasspathConfig classpath}, falling back to hard-code config if
- * not found.
+ * configuration if no file is available.
+ * This provider will first try to read the file from the current directory; 
+ * failing that, it will try to find the file in the class-path, falling back
+ * to hard-code config if not found.
  */
 @Component
 @Profile(Profiles.ConfigFile)
@@ -31,7 +30,7 @@ public class FileTripsters extends PriorityConfigProvider<TripsterConfig> {
     }
     
     @Override 
-    protected Stream<TripsterConfig> getFallback() {
+    public Stream<TripsterConfig> getFallback() {
         return new HardCodedTripsters().defaultReadConfig();
     }
 

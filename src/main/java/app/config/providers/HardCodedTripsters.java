@@ -24,7 +24,7 @@ public class HardCodedTripsters implements ConfigProvider<TripsterConfig> {
      */
     @Override
     public Stream<TripsterConfig> readConfig() {
-        return DefaultTripsters.tripsters.stream();
+        return new DefaultTripsters().readConfig();
     }
     
 }

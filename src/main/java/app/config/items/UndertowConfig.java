@@ -1,5 +1,7 @@
 package app.config.items;
 
+import java.util.Objects;
+
 /**
  * Holds the data for an Undertow deployment as read from configuration.
  */
@@ -15,6 +17,24 @@ public class UndertowConfig {
 
     public void setPort(int port) {
         this.port = port;
+    }
+    
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof UndertowConfig) {
+            return Objects.equals(other.toString(), this.toString());
+        }
+        return false;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s", port);
     }
     
 }

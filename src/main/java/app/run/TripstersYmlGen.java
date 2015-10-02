@@ -1,5 +1,7 @@
 package app.run;
 
+import static util.Streams.asList;
+
 import java.util.List;
 
 import util.config.YamlConverter;
@@ -21,8 +23,10 @@ public class TripstersYmlGen implements RunnableApp {
      */
     @Override
     public void run(List<String> appArgs) {
+        List<TripsterConfig> fileContents = asList( 
+                                        new TripstersYmlFile().readConfig());
         String yaml = new YamlConverter<List<TripsterConfig>>()
-                     .toYaml(TripstersYmlFile.tripsters);
+                     .toYaml(fileContents);
         System.out.print(yaml); 
     }
 

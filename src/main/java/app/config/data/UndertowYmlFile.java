@@ -1,22 +1,21 @@
 package app.config.data;
 
-import java.util.function.Supplier;
+import java.util.stream.Stream;
 
+import util.config.ConfigProvider;
 import app.config.items.UndertowConfig;
 
 /**
  * The data that goes into 'config/undertow.yml'.
  */
-public class UndertowYmlFile implements Supplier<UndertowConfig> {
+public class UndertowYmlFile implements ConfigProvider<UndertowConfig> {
 
-    public static final UndertowConfig contents = new UndertowYmlFile().get();
-    
     @Override
-    public UndertowConfig get() {
+    public Stream<UndertowConfig> readConfig() {
         UndertowConfig cfg = new UndertowConfig();
         cfg.setPort(8080);
         
-        return cfg;
+        return Stream.of(cfg);
     }
 
 }
