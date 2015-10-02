@@ -20,6 +20,7 @@ import util.servlet.http.CharEncodingFilter;
 import app.config.Profiles;
 import app.config.WebWiring;
 import app.config.Wiring;
+import app.config.providers.UndertowConfigProvider;
 
 /**
  * Spring Boot web app to exercise the core functionality.
@@ -84,9 +85,9 @@ public class SpringBootWebApp implements RunnableApp {
     
     @Bean
     public UndertowEmbeddedServletContainerFactory 
-                embeddedServletContainerFactory() {
+                embeddedServletContainerFactory(UndertowConfigProvider cfg) {
         
-        int port = 8080;
+        int port = cfg.defaultReadConfig().findFirst().get().getPort();
         
         UndertowEmbeddedServletContainerFactory factory = 
                 new UndertowEmbeddedServletContainerFactory(port);
