@@ -13,11 +13,10 @@ import org.springframework.stereotype.Component;
 import app.config.Profiles;
 import app.config.items.TripsterConfig;
 import util.config.ConfigProvider;
-import util.config.FallbackConfigProvider;
 import util.config.YamlConverter;
-import util.spring.config.LociResourceConfigProvider;
-import util.spring.io.FifoResourceLoaderAdapter;
+import util.spring.io.FifoResource;
 import util.spring.io.ResourceLocation;
+import util.spring.io.ResourceReader;
 
 
 /**
@@ -30,7 +29,9 @@ import util.spring.io.ResourceLocation;
  */
 @Component
 @Profile(Profiles.ConfigFile)
-public class FileTripsters implements ConfigProvider<TripsterConfig> {
+public class FileTripsters
+    extends FifoResource<TripsterConfig>
+    implements ConfigProvider<TripsterConfig> {
 
     /**
      * Location of the YAML file in the classpath.
@@ -48,13 +49,28 @@ public class FileTripsters implements ConfigProvider<TripsterConfig> {
     @Autowired
     private ResourceLoader resourceLoader;
     
+    @Override
+    protected ResourceLoader getResourceLoader() {
+        return resourceLoader;
+    }
+
+    @Override
+    protected ResourceReader<TripsterConfig> getConverter() {
+        return new YamlConverter<TripsterConfig>()::fromYamlList;
+    }
+    
     /**
      * Reads the happy bunch of tripsters from configuration.
      * @return all configured tripsters; never {@code null}.
      */
     @Override
     public Stream<TripsterConfig> readConfig() throws Exception {
-        return readConfig(PwdConfig, ClasspathConfig);
+        return read(PwdConfig, ClasspathConfig);
+    }
+    
+    @Override 
+    protected Stream<TripsterConfig> getFallback() {
+        return new HardCodedTripsters().defaultReadConfig();
     }
     
     /**
@@ -63,18 +79,7 @@ public class FileTripsters implements ConfigProvider<TripsterConfig> {
      */
     public Stream<TripsterConfig> readConfig(ResourceLocation...loci) 
             throws Exception {
-        ConfigProvider<TripsterConfig> source = 
-                new LociResourceConfigProvider<>(
-                        new FifoResourceLoaderAdapter(resourceLoader), 
-                        new YamlConverter<TripsterConfig>()::fromYamlList, 
-                        loci);
-        
-        ConfigProvider<TripsterConfig> sourceOrFallback =
-                new FallbackConfigProvider<>(
-                        source, 
-                        new HardCodedTripsters()::defaultReadConfig);
-        
-        return sourceOrFallback.readConfig();
+        return read(loci);
     }
     
 }
