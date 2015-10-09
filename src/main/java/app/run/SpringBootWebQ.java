@@ -8,6 +8,7 @@ import app.config.HornetQWiring;
 import app.config.Profiles;
 import app.config.WebWiring;
 import app.config.Wiring;
+import app.webq.ShowTripRequest;
 
 /**
  * Extends the functionality of the {@link SpringBootWebApp} with an embedded
@@ -22,10 +23,13 @@ import app.config.Wiring;
  * curl http://localhost:8080/ 
  * </pre>
  * and follow the returned instructions to find out about a tripster's trip. 
- * Additionally, you can request a tripster's trip asynchronously by prepending
- * {@code q} to the request URL as in:
+ * Additionally, you can request a tripster's trip asynchronously by POST-ing
+ * a JSON {@link ShowTripRequest} to {@code http://localhost:8080/q}, as in:
  * <pre>
- * curl http://localhost:8080/q/gauss?at=3
+ * curl -H 'Content-Type: application/json' \
+ *      -X POST \ 
+ *      -d '{"tripsterName":"gauss", "legsTraveled":"3"}' \
+ *      http://localhost:8080/q
  * </pre>
  * which will return immediately with an empty HTTP response and put a request 
  * message on the server queue; the message will then processed asynchronously 

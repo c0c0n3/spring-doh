@@ -1,6 +1,6 @@
 package app.webq;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -9,12 +9,12 @@ import javax.jms.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.MediaType;
 import org.springframework.jms.core.JmsOperations;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.jms.support.converter.MessageConverter;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -28,11 +28,13 @@ import app.config.items.TripstersQConfig;
  * {@link TripsterQConsumer}.
  */
 @RestController  // includes @ResponseBody: return vals bound to response body.
-@RequestMapping("/q")
+@RequestMapping("/")
 @Scope(WebApplicationContext.SCOPE_REQUEST)
 @Profile(Profiles.WebQ)
 public class TripsterQController {
 
+    public static final String TripsterQPath = "q";
+    
     @Autowired
     private JmsOperations jmsOps;
     
@@ -51,14 +53,9 @@ public class TripsterQController {
         };
     }
     
-    @RequestMapping(value = "{tripster}", method = GET)
-    public void showTrip(
-            @PathVariable(value="tripster") 
-            String tripsterName,
-            @RequestParam(value="at", defaultValue="0") 
-            int legsTraveled) {
-        ShowTripRequest msg = new ShowTripRequest(tripsterName, legsTraveled);
-        
+    @RequestMapping(value = TripsterQPath, method = POST, 
+                    consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void showTrip(@RequestBody ShowTripRequest msg) {
         jmsOps.send(tripstersQ.getName(), msgCreator(msg));  // (*)
     }
     /* (*) we could have configured the JMSTemplate to use tripsterQMessageConverter
