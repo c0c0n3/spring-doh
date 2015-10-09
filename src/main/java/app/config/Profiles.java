@@ -29,5 +29,9 @@ public class Profiles {
     */
    public static final String NotWebApp = "!WebApp";
    
+   /**
+    * Beans specific to the Web app embedding a queue.
+    */
+   public static final String WebQ = "WebQ";
     
 }

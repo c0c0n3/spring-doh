@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,7 @@ public class HomeController implements Identifiable {
     public static final String SpotterPath = "objects/spotter";
     
     @Autowired
+    @Qualifier("tripsterSpotter")
     private TripsterSpotter<String> spotter; 
     // NB will be shared across requests (!) as this controller is a singleton. 
     

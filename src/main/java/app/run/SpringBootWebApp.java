@@ -31,7 +31,7 @@ import app.config.providers.UndertowConfigProvider;
  * </pre>
  * Access the landing page from another terminal
  * <pre>
- * curl -O http://localhost:8080/ 
+ * curl http://localhost:8080/ 
  * </pre>
  * and follow the returned instructions to find out about a tripster's trip.
  */

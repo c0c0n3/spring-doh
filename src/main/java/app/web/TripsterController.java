@@ -6,6 +6,7 @@ import static util.Either.right;
 import static util.spring.http.ResponseEntities.okOr404;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,7 @@ public class TripsterController implements Identifiable {
     public static final String TellVisualizerIdPath = "tell/id/of/TripsterController/visualizer";
     
     @Autowired
+    @Qualifier("tripsterSpotter")
     private TripsterSpotter<String> spotter;
     // NB will be shared across requests (!) as spotter is a singleton.
     
