@@ -14,9 +14,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.jms.listener.adapter.MessageListenerAdapter;
-import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
-import org.springframework.jms.support.converter.MessageType;
 
 import app.config.items.TripsterConfig;
 import app.config.items.TripstersQConfig;
@@ -27,6 +25,7 @@ import app.core.trips.TripsterGroup;
 import app.core.trips.TripsterSpotter;
 import app.webq.TripsterQConsumer;
 import app.webq.TripsterQController;
+import app.webq.TripsterQMessageConverter;
 import util.config.ConfigProvider;
 
 
@@ -53,20 +52,8 @@ public class HornetQWiring {
     
     @Bean
     public MessageConverter tripsterQMessageConverter() { 
-        MappingJackson2MessageConverter converter = 
-                new MappingJackson2MessageConverter();
-        converter.setTargetType(MessageType.TEXT);                // (1)
-        converter.setTypeIdPropertyName("tripsterQMessageBody");  // (2)
-        
-        return converter;
+        return new TripsterQMessageConverter();
     }
-    /* NOTES.
-     * 1. MappingJackson2MessageConverter defaults the character encoding to
-     * UTF-8.
-     * 2. This has to be a valid Java identifier, otherwise HornetQ will throw
-     * when MappingJackson2MessageConverter attempts to set it as a message
-     * property. (See MappingJackson2MessageConverter#setTypeIdOnMessage)
-     */
     
     @Bean
     public MessageListenerContainer tripstersQListenerContainer(
@@ -82,6 +69,8 @@ public class HornetQWiring {
         adapter.setDefaultListenerMethod(TripsterQConsumer.listnerMethodName());
         adapter.setMessageConverter(tripsterQMessageConverter());
         mlc.setMessageListener(adapter);
+        
+        mlc.setErrorHandler(listener);
         
         return mlc;
     }

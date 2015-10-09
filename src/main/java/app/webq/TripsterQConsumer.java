@@ -5,6 +5,7 @@ import static util.Exceptions.unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ErrorHandler;
 
 import app.core.trips.TripsterSpotter;
 
@@ -14,7 +15,7 @@ import app.core.trips.TripsterSpotter;
  * a tripster has traveled so far.
  */
 @Component
-public class TripsterQConsumer {
+public class TripsterQConsumer implements ErrorHandler {
     
     public static String listnerMethodName() {
         return unchecked(
@@ -37,6 +38,12 @@ public class TripsterQConsumer {
     
     public void consume(ShowTripRequest r) {
         spotter.showWhereIs(r.getTripsterName(), r.getLegsTraveled());
+    }
+
+    @Override
+    public void handleError(Throwable t) {
+        System.err.println("Error processing message on tripster queue:");
+        t.printStackTrace();
     }
     
 }
