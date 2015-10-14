@@ -10,3 +10,7 @@ build
 .classpath
 .project
 .settings
+
+# Log files
+
+app.log

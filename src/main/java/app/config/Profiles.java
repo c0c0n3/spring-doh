@@ -33,5 +33,10 @@ public class Profiles {
     * Beans specific to the Web app embedding a queue.
     */
    public static final String WebQ = "WebQ";
-    
+   
+   /**
+    * Configuration specific to the fully fledged Spring Boot app. 
+    */
+   public static final String FullyFledged = "FullyFledged";
+   
 }
