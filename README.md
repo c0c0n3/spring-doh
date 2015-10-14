@@ -15,17 +15,17 @@ Hall of Shame
 -------------
 Featuring:
 
-1. *Tripsters*. Standalone POJO's to encode the core functionality *without* 
+1. *Tripsters*. Standalone POJO's to encode the core functionality *without* any 
 dependencies on Spring. A tripster goes on a trip away from home and then comes
 back; each app will have a bunch of these happy dudes along with a tripster
 spotter who can show you a tripster's trip. Find the code in `app.core`.
 2. *Bare Bones App*. Simple CLI app to let you play with tripsters; it has no
 dependency on Spring. Look for it in `app.run`.
-3. *Spring CLI App*. Same as the bare bones app, but hosts beanified POJO's
-(`app.beans`) sprinkled with a few aspects (`app.aspects`) and configuration
-(`app.config`) in a CLI Spring container. Configuration is quite saucy with
-Java-only config, hierarchies and priorities. So bake in the container until 
-crispy; take out of the oven and eat in `app.run`.
+3. *Spring CLI App*. Same as the bare bones app, but hosts beanified POJO's (see
+`app.beans` and `app.config.Wiring`) sprinkled with a few aspects (`app.aspects`)
+and configuration (`app.config`) in a CLI Spring container. Configuration is
+quite saucy with Java-based config, hierarchies and priorities. So bake in the
+container until crispy; take out of the oven and eat in `app.run`.
 4. *Spring Boot Web App*. Uses Spring MVC & REST controllers to make the core
 functionality available through an embedded [Undertow][undertow] Web server,
 courtesy of Spring Booty auto-configuration. Available in `app.run`.
@@ -78,9 +78,9 @@ then import into Eclipse as a Gradle project.
 Beer-time Reading
 -----------------
 As I banged my forehead against the monitor, I found chapters 1 through 4
-and chapter 21 of [Spring in Action][spring-in-action] a useful pain killer.
+and chapter 21 of [Spring in Action][spring-in-action] a decent pain killer.
 I then had to dig deeper in the Spring and Spring Boot manuals, but the best
-pain relief came from reading their source code on GitHub.
+pain relief came from reading the Spring guys' source code on GitHub.
 
 
 
