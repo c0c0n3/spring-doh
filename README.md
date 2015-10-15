@@ -24,7 +24,7 @@ dependency on Spring. Look for it in `app.run`.
 3. *Spring CLI App*. Same as the bare bones app, but hosts beanified POJO's (see
 `app.beans` and `app.config.Wiring`) sprinkled with a few aspects (`app.aspects`)
 and configuration (`app.config`) in a CLI Spring container. Configuration is
-quite saucy with Java-based config, hierarchies and priorities. So bake in the
+quite saucy with Java-based config, profiles and priorities. So bake in the
 container until crispy; take out of the oven and eat in `app.run`.
 4. *Spring Boot Web App*. Uses Spring MVC & REST controllers to make the core
 functionality available through an embedded [Undertow][undertow] Web server,

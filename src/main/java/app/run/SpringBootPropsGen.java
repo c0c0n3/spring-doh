@@ -37,8 +37,29 @@ public class SpringBootPropsGen implements RunnableApp {
         try {
             dumpProps();
         } catch (IOException e) {
-            Exceptions.throwAsIfUnchecked(e);
+            Exceptions.throwAsIfUnchecked(e);  // see note at bottom of file
         }
     }
 
 }
+/* NOTE. The ghostly Lambda Jamda.
+ * The night was sultry in Jakarta and the mist was thick. Jay Sleuth was still
+ * out on the streets, still clueless about Lambda's whereabouts, following a 
+ * weak lead from a bad snitch who had reported the lightning appearance of a
+ * silhouette resembling Lambda's slender body:
+ * 
+ *     public void run(List<String> appArgs) {
+ *         Exceptions.unchecked(this::dumpProps);
+ *     }
+ * 
+ * But Jay knew this would not compile because of the emptiness of Java's void.
+ * So Lambda had to be somewhere else, possibly here:
+ * 
+ *     public void run(List<String> appArgs) {
+ *         Exceptions.unchecked(() -> { dumpProps(); return 0; });
+ *     }
+ * 
+ * So Jay set a breakpoint in dumpProps, fired the debugger and...nothing, nada,
+ * zilch, zero! The breakpoint was never hit, stdout remained quiet, and Lambda
+ * vanished, never to be seen again. 
+ */
