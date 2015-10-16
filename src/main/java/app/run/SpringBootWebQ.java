@@ -1,5 +1,7 @@
 package app.run;
 
+import static util.Arrayz.array;
+
 import java.util.List;
 
 import org.springframework.boot.SpringApplication;
@@ -42,10 +44,13 @@ public class SpringBootWebQ extends SpringBootWebApp {
         SpringApplication app = new SpringApplication(
                 SpringBootWebApp.class, Wiring.class, 
                 WebWiring.class, HornetQWiring.class);
-        app.setAdditionalProfiles(
-                Profiles.ConfigFile, Profiles.WebApp, Profiles.WebQ);
+        app.setAdditionalProfiles(getProfiles());
         
         app.run();  // could pass in appArgs if needed  
+    }
+    
+    protected String[] getProfiles() {
+        return array(Profiles.ConfigFile, Profiles.WebApp, Profiles.WebQ);
     }
     
 }

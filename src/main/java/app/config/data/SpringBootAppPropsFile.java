@@ -20,7 +20,14 @@ public class SpringBootAppPropsFile
         cfg.getLogConfig().setFileName("app.log");
         cfg.getLogConfig().setRootLogLevel(LogLevel.INFO);
         
+        cfg.getActuatorConfig().setEnabled(true);
+        cfg.getActuatorConfig().setSensitive(false);
+        
+        cfg.getActuatorConfig().setJmxDomain("FullyFledgedApp");
+        cfg.getActuatorConfig().setJmxEnabled(true);
+        cfg.getActuatorConfig().setJmxUniqueNames(true);
+        
         return Stream.of(cfg);
     }
-
+    
 }

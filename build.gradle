@@ -32,6 +32,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile("org.springframework.boot:spring-boot-starter-hornetq")
     compile("org.hornetq:hornetq-jms-server")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
     
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }

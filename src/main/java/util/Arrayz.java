@@ -55,13 +55,31 @@ public class Arrayz<A> {  // avoids conflicts with JDK Arrays class.
     
     /**
      * Collects the given array's elements into a list; if the array is 
-     * {@code null}, then the empty list is returned.
+     * {@code null}, then the empty list is returned. The returned list
+     * is immutable.
      * @param ts the array to convert.
      * @return the array's elements collected into a list.
+     * @see #asMutableList(Object...) asMutableList
      */
     @SafeVarargs
     public static <T> List<T> asList(T...ts) {
         return ts == null ? Collections.emptyList() : Arrays.asList(ts);
+    }
+    
+    /**
+     * Collects the given array's elements into a list; if the array is 
+     * {@code null}, then the empty list is returned but any {@code null}
+     * elements will be otherwise added to the list.
+     * @param ts the array to convert.
+     * @return the array's elements collected into a list.
+     */
+    @SafeVarargs
+    public static <T> List<T> asMutableList(T...ts) {
+        if (ts == null) return new ArrayList<>();
+        
+        ArrayList<T> ys = new ArrayList<>(ts.length);
+        for (int k = 0; k < ts.length; ++k) ys.add(ts[k]);
+        return ys;
     }
     
     /**
