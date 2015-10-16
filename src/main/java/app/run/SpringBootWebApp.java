@@ -16,11 +16,13 @@ import org.springframework.boot.context.embedded.undertow.UndertowDeploymentInfo
 import org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 
+import util.config.ConfigProvider;
 import util.servlet.http.CharEncodingFilter;
 import app.config.Profiles;
 import app.config.WebWiring;
 import app.config.Wiring;
-import app.config.providers.UndertowConfigProvider;
+import app.config.items.UndertowConfig;
+
 
 /**
  * Spring Boot web app to exercise the core functionality.
@@ -85,7 +87,8 @@ public class SpringBootWebApp implements RunnableApp {
     
     @Bean
     public UndertowEmbeddedServletContainerFactory 
-                embeddedServletContainerFactory(UndertowConfigProvider cfg) {
+                embeddedServletContainerFactory(
+                        ConfigProvider<UndertowConfig> cfg) {
         
         int port = cfg.defaultReadConfig().findFirst().get().getPort();
         
