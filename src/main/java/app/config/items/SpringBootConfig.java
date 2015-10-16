@@ -74,4 +74,12 @@ public class SpringBootConfig {
         return new SpringBootAdminConfig(props);
     }
     
+    /**
+     * Access to the various Spring Boot app info properties.
+     * @return An object to access Spring Boot app info properties.
+     */
+    public SpringBootAppInfoConfig info() {
+        return new SpringBootAppInfoConfig(props);
+    }
+    
 }

@@ -17,7 +17,10 @@ public class SpringBootAppPropsFile
 
     @Override
     public Stream<SpringBootConfig> readConfig() throws Exception {
+        String appName = "FullyFledgedApp";
         SpringBootConfig cfg = new SpringBootConfig(); 
+        
+        cfg.info().setName(appName);
         
         cfg.log().setFileName("app.log")
                  .setRootLogLevel(LogLevel.INFO);
@@ -25,7 +28,7 @@ public class SpringBootAppPropsFile
         cfg.actuator().setEnabled(true)
                       .setSensitive(false);
         
-        cfg.actuator().setJmxDomain("FullyFledgedApp")
+        cfg.actuator().setJmxDomain(appName)
                       .setJmxEnabled(true)
                       .setJmxUniqueNames(true);
         
