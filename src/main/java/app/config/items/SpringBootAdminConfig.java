@@ -34,9 +34,10 @@ public class SpringBootAdminConfig {
         this.props = springBootAppProps;
     }
  
-    public void setAdminServerUrl(URI serverRoot) {
+    public SpringBootAdminConfig setAdminServerUrl(URI serverRoot) {
         requireNonNull(serverRoot, "serverRoot");
         props.setProperty(AdminServerUrlKey, serverRoot.toASCIIString());
+        return this;
     }
     
     public Optional<URI> getAdminServerUrl() {

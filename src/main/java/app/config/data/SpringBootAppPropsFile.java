@@ -19,17 +19,17 @@ public class SpringBootAppPropsFile
     public Stream<SpringBootConfig> readConfig() throws Exception {
         SpringBootConfig cfg = new SpringBootConfig(); 
         
-        cfg.getLogConfig().setFileName("app.log");
-        cfg.getLogConfig().setRootLogLevel(LogLevel.INFO);
+        cfg.log().setFileName("app.log")
+                 .setRootLogLevel(LogLevel.INFO);
         
-        cfg.getActuatorConfig().setEnabled(true);
-        cfg.getActuatorConfig().setSensitive(false);
+        cfg.actuator().setEnabled(true)
+                      .setSensitive(false);
         
-        cfg.getActuatorConfig().setJmxDomain("FullyFledgedApp");
-        cfg.getActuatorConfig().setJmxEnabled(true);
-        cfg.getActuatorConfig().setJmxUniqueNames(true);
+        cfg.actuator().setJmxDomain("FullyFledgedApp")
+                      .setJmxEnabled(true)
+                      .setJmxUniqueNames(true);
         
-        cfg.getAdminConfig().setAdminServerUrl(buildAdminUrl());
+        cfg.admin().setAdminServerUrl(buildAdminUrl());
         
         return Stream.of(cfg);
     }

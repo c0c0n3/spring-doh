@@ -24,50 +24,59 @@ public class ActuatorConfig {
         this.props = springBootAppProps;
     }
     
-    public void setId(ActuatorEndPointName which, String id) {
+    public ActuatorConfig setId(ActuatorEndPointName which, String id) {
         props.setProperty(key(EndPointsPrefix, which.name(), "id"), id);
+        return this;
     }
     
-    public void setEnabled(ActuatorEndPointName which, boolean enable) {
+    public ActuatorConfig setEnabled(ActuatorEndPointName which, boolean enable) {
         props.setProperty(key(EndPointsPrefix, which.name(), "enabled"), 
                           String.valueOf(enable));
+        return this;
     }
     
-    public void setEnabled(boolean enableAll) {
+    public ActuatorConfig setEnabled(boolean enableAll) {
         Stream.of(ActuatorEndPointName.values())
               .forEach(name -> setEnabled(name, enableAll));
+        return this;
     }
     
-    public void setSensitive(ActuatorEndPointName which, boolean sensitive) {
+    public ActuatorConfig setSensitive(ActuatorEndPointName which, boolean sensitive) {
         props.setProperty(key(EndPointsPrefix, which.name(), "sensitive"), 
                           String.valueOf(sensitive));
+        return this;
     }
     
-    public void setSensitive(boolean allSensitive) {
+    public ActuatorConfig setSensitive(boolean allSensitive) {
         Stream.of(ActuatorEndPointName.values())
               .forEach(name -> setSensitive(name, allSensitive));
+        return this;
     }
     
-    public void setManagementAddress(String host) {
-        props.setProperty(key(ManagementPrefix, "address"), host);  
+    public ActuatorConfig setManagementAddress(String host) {
+        props.setProperty(key(ManagementPrefix, "address"), host);
+        return this;
     }
     /* NB: quoting Spring Boot manual
      * useful if you want to listen only on an internal or ops-facing network, 
      * or to only listen for connections from localhost.
      */
     
-    public void setManagementPort(int number) {
+    public ActuatorConfig setManagementPort(int number) {
         props.setProperty(key(ManagementPrefix, "port"), 
                           String.valueOf(number));  // NB -1 will disable HTTP
+        return this;
     }
     
-    public void setManagementContextPath(String absolutePath) {
+    public ActuatorConfig setManagementContextPath(String absolutePath) {
         props.setProperty(key(ManagementPrefix, "context-path"), absolutePath);
+        return this;
     }
     
-    public void setSecurityEnabled(boolean enable) {
+    public ActuatorConfig setSecurityEnabled(boolean enable) {
         props.setProperty(key(ManagementPrefix, SecurityPrefix, "enabled"), 
                           String.valueOf(enable));
+        return this;
     }
     /* NB: quoting Spring Boot manual
      * If you don’t have Spring Security on the classpath then there is no need 
@@ -75,32 +84,38 @@ public class ActuatorConfig {
      * even break the application.
      */
     
-    public void setAdminUserName(String name) {
-        props.setProperty(key(SecurityPrefix, "user.name"), name); 
+    public ActuatorConfig setAdminUserName(String name) {
+        props.setProperty(key(SecurityPrefix, "user.name"), name);
+        return this;
     }
     
-    public void setAdminPassword(String password) {
-        props.setProperty(key(SecurityPrefix, "user.password"), password); 
+    public ActuatorConfig setAdminPassword(String password) {
+        props.setProperty(key(SecurityPrefix, "user.password"), password);
+        return this;
     }
     
-    public void setSecurityRole(String role) {
+    public ActuatorConfig setSecurityRole(String role) {
         props.setProperty(key(ManagementPrefix, SecurityPrefix, "role"), 
-                          role); 
+                          role);
+        return this;
     }
 
-    public void setJmxDomain(String domainUnderWhichToExposeEndPoints) {
+    public ActuatorConfig setJmxDomain(String domainUnderWhichToExposeEndPoints) {
         props.setProperty(key(EndPointsPrefix, JmxPrefix, "domain"), 
-                          domainUnderWhichToExposeEndPoints);  
+                          domainUnderWhichToExposeEndPoints);
+        return this;
     }
     
-    public void setJmxUniqueNames(boolean enforceUnique) {
+    public ActuatorConfig setJmxUniqueNames(boolean enforceUnique) {
         props.setProperty(key(EndPointsPrefix, JmxPrefix, "uniqueNames"), 
-                          String.valueOf(enforceUnique));  
+                          String.valueOf(enforceUnique));
+        return this;
     }
     
-    public void setJmxEnabled(boolean enable) {
+    public ActuatorConfig setJmxEnabled(boolean enable) {
         props.setProperty(key("spring", JmxPrefix, "enabled"), 
-                          String.valueOf(enable));  
+                          String.valueOf(enable));
+        return this;
     }
     
 }

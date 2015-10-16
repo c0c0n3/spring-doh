@@ -54,7 +54,7 @@ public class SpringBootConfig {
      * Access to the "{@code logging.*}" properties.
      * @return An object to access "{@code logging.*}" properties.
      */
-    public SpringBootLogConfig getLogConfig() {
+    public SpringBootLogConfig log() {
         return new SpringBootLogConfig(props);
     }
     
@@ -62,7 +62,7 @@ public class SpringBootConfig {
      * Access to the various Spring Boot Actuator properties.
      * @return An object to access Actuator properties.
      */
-    public ActuatorConfig getActuatorConfig() {
+    public ActuatorConfig actuator() {
         return new ActuatorConfig(props);
     }
 
@@ -70,7 +70,7 @@ public class SpringBootConfig {
      * Access to the various Spring Boot Admin properties.
      * @return An object to access Spring Boot Admin properties.
      */
-    public SpringBootAdminConfig getAdminConfig() {
+    public SpringBootAdminConfig admin() {
         return new SpringBootAdminConfig(props);
     }
     

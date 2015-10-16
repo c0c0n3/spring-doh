@@ -22,18 +22,21 @@ public class SpringBootLogConfig {
         this.props = springBootAppProps;
     }
     
-    public void setFileName(String pathname) {
+    public SpringBootLogConfig setFileName(String pathname) {
         requireNonNull(pathname, "pathname");
         props.setProperty(LogFileKey, pathname);
+        return this;
     }
     
-    public void setLogLevel(String packageName, LogLevel level) {
+    public SpringBootLogConfig setLogLevel(String packageName, LogLevel level) {
         requireString(packageName, "packageName");
         props.setProperty(key(LogLevelPrefix, packageName), level.name());
+        return this;
     }
     
-    public void setRootLogLevel(LogLevel level) {
+    public SpringBootLogConfig setRootLogLevel(LogLevel level) {
         setLogLevel("ROOT", level);
+        return this;
     }
     
 }
