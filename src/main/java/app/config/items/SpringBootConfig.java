@@ -65,5 +65,13 @@ public class SpringBootConfig {
     public ActuatorConfig getActuatorConfig() {
         return new ActuatorConfig(props);
     }
+
+    /**
+     * Access to the various Spring Boot Admin properties.
+     * @return An object to access Spring Boot Admin properties.
+     */
+    public SpringBootAdminConfig getAdminConfig() {
+        return new SpringBootAdminConfig(props);
+    }
     
 }

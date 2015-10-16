@@ -21,7 +21,7 @@ public class SpringBootPropsGen implements RunnableApp {
 
     private void dumpProps() throws IOException {
         new SpringBootAppPropsFile()
-            .readConfig()
+            .defaultReadConfig()
             .findFirst()
             .get()
             .getProps()
