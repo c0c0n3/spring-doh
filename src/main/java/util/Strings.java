@@ -1,6 +1,7 @@
 package util;
 
 import static java.util.Objects.requireNonNull;
+import static util.Arrayz.isNullOrZeroLength;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -61,6 +62,22 @@ public class Strings {
      */
     public static void requireString(String x) {
         requireString(x, null);
+    }
+    
+    /**
+     * Throws an exception if the argument is {@code null} or has zero length
+     * or any of the elements is {@code null} or empty.
+     * @param xs the array to test.
+     * @throws IllegalArgumentException if the argument is {@code null} or has
+     * zero length or any of the components is {@code null} or empty.
+     */
+    public static void requireStrings(String[] xs) {
+        if (isNullOrZeroLength(xs)) {
+            throw new IllegalArgumentException("no strings");
+        }
+        for (int k = 0; k < xs.length; ++k) {
+            requireString(xs[k], "null or empty at " + k);
+        }
     }
     
 }
