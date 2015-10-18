@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 
@@ -47,6 +48,18 @@ public class JProps {
     public <T> JProps set(JPropSetter<T> prop, T value) {
         requireNonNull(prop, "prop");
         prop.set(db, value);
+        return this;
+    }
+    
+    /**
+     * Lets the specified consumer set a property.
+     * @param prop the property setter.
+     * @return itself to facilitate fluent API style.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public JProps set(Consumer<Properties> prop) {
+        requireNonNull(prop, "prop");
+        prop.accept(db);
         return this;
     }
     

@@ -29,9 +29,8 @@ public class JPropsTest {
         return new JProps(new Properties());
     }
     
-    private static <T> void assertWriteThenReadBackThenRemove(
+    private static <T> String assertPropWasSet(
             JProps props, JPropAccessor<T> prop, T value) {
-        props.set(prop, value);
         Optional<T> maybeValue = props.get(prop);
         
         assertNotNull(maybeValue);
@@ -40,8 +39,18 @@ public class JPropsTest {
         
         String k = prop.getKey().get();
         assertTrue(props.getProps().containsKey(k));
+        
+        return k;
+    }
+    
+    private static <T> void assertWriteThenReadBackThenRemove(
+            JProps props, JPropAccessor<T> prop, T value) {
+        props.set(prop, value);
+        
+        String key = assertPropWasSet(props, prop, value);
+        
         props.remove(prop);
-        assertFalse(props.getProps().containsKey(k));
+        assertFalse(props.getProps().containsKey(key));
     }
     
     @DataPoints
@@ -93,6 +102,12 @@ public class JPropsTest {
     public void throwRuntimeExceptionIfFailsToConvertToObject() {
         props.getProps().setProperty(uriProp.getKey().get(), "   ");
         props.get(uriProp);
+    }
+    
+    @Test
+    public void setWithConsumer() {
+        props.set(boolProp.with(true));
+        assertPropWasSet(props, boolProp, true);
     }
     
     @Test
@@ -152,6 +167,11 @@ public class JPropsTest {
     @Test(expected = NullPointerException.class)
     public void setThrowsIfNullSecondArg() {
         props.set(boolProp, null);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void setWithConsumerThrowsIfNullArg() {
+        props.set(null);
     }
     
     @Test(expected = NullPointerException.class)

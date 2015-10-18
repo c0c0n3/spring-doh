@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 
@@ -137,6 +138,17 @@ public class JPropAccessor<T> implements JPropGetter<T>, JPropSetter<T> {
      */
     public JPropKey getKey() {
         return key;
+    }
+    
+    /**
+     * Creates a consumer to set this property with the given value.
+     * @param value the value to set.
+     * @return the consumer to set the value.
+     * @throws NullPointerException if the argument is {@code null}.
+     */
+    public Consumer<Properties> with(T value) {
+        requireNonNull(value, "value");  // NB fail early
+        return db -> set(db, value);
     }
     
 }
