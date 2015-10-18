@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 
 /**
@@ -40,7 +41,7 @@ public class JProps {
      * {@link Properties} store.
      * @param prop the property setter.
      * @param value the value to set.
-     * @return itself to facilitate use in a fluent API style.
+     * @return itself to facilitate fluent API style.
      * @throws NullPointerException if any argument is {@code null}.
      */
     public <T> JProps set(JPropSetter<T> prop, T value) {
@@ -50,10 +51,24 @@ public class JProps {
     }
     
     /**
+     * Calls {@link #set(JPropSetter, Object) set} to store the same value in
+     * all listed properties.
+     * @param props the property setters.
+     * @param value the value to set.
+     * @return itself to facilitate fluent API style.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public <T> JProps setAll(Stream<JPropSetter<T>> props, T value) {
+        requireNonNull(props, "props");
+        props.forEach(p -> set(p, value));
+        return this;
+    }
+    
+    /**
      * Uses the given setter to store an empty property in the underlying Java
      * {@link Properties} store.
      * @param prop the property setter.
-     * @return itself to facilitate use in a fluent API style.
+     * @return itself to facilitate fluent API style.
      * @throws NullPointerException if the argument is {@code null}.
      */
     public JProps setEmpty(JPropSetter<?> prop) {
@@ -66,12 +81,25 @@ public class JProps {
      * Uses the given setter to remove a property from the underlying Java
      * {@link Properties} store.
      * @param prop the property setter.
-     * @return itself to facilitate use in a fluent API style.
+     * @return itself to facilitate fluent API style.
      * @throws NullPointerException if the argument is {@code null}.
      */
     public JProps remove(JPropSetter<?> prop) {
         requireNonNull(prop, "prop");
         prop.remove(db);
+        return this;
+    }
+    
+    /**
+     * Calls {@link #remove(JPropSetter) remove} to delete all the listed 
+     * properties from the property store.
+     * @param props the property setters.
+     * @return itself to facilitate fluent API style.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public JProps removeAll(Stream<JPropSetter<?>> props) {
+        requireNonNull(props, "props");
+        props.forEach(p -> remove(p));
         return this;
     }
     

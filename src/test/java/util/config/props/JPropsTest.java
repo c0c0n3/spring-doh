@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 public class JPropsTest {
 
     private static JPropAccessor<Boolean> boolProp = 
-            JPropAccessor.make("p1", Boolean::valueOf);
+            JPropAccessor.makeBool(key("p1"));
     private static JPropAccessor<URI> uriProp = 
             new JPropAccessor<>(key("p2"), URI::create, URI::toASCIIString);
     
@@ -95,6 +95,45 @@ public class JPropsTest {
         props.get(uriProp);
     }
     
+    @Test
+    public void setAllDoesNothingIfEmptyStream() {
+        props.setAll(Stream.of(), true);
+        assertTrue(props.getProps().isEmpty());
+    }
+    
+    @Test
+    public void setAllWritesSameValueForAllListedProps() {
+        JPropAccessor<String> s1 = JPropAccessor.makeString(key("s1"));
+        JPropAccessor<String> s2 = JPropAccessor.makeString(key("s2"));                      
+        
+        String value = "same";
+        props.setAll(Stream.of(s1, s2), value);
+        
+        assertThat(props.get(s1).get(), is(value));
+        assertThat(props.get(s2).get(), is(value));
+    }
+    
+    @Test
+    public void removeAllDoesNothingIfEmptyStream() {
+        props.set(boolProp, true);
+        props.removeAll(Stream.of());
+        assertFalse(props.getProps().isEmpty());
+    }
+    
+    @Test
+    public void removeAllOnlyDeletesListedProps() {
+        JPropAccessor<String> s1 = JPropAccessor.makeString(key("s1"));
+        JPropAccessor<String> s2 = JPropAccessor.makeString(key("s2"));                      
+        
+        props.setAll(Stream.of(s1, s2), "same");
+        props.set(boolProp, true);
+        props.removeAll(Stream.of(s1, s2));
+        
+        assertFalse(props.get(s1).isPresent());
+        assertFalse(props.get(s2).isPresent());
+        assertTrue(props.get(boolProp).isPresent());
+    }
+    
     @Test(expected = NullPointerException.class)
     public void ctorThrowsIfNullArg() {
         new JProps(null);
@@ -116,6 +155,21 @@ public class JPropsTest {
     }
     
     @Test(expected = NullPointerException.class)
+    public void setAllThrowsIfNullFirstArg() {
+        props.setAll(null, "");
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void setAllThrowsIfNullSecondArg() {
+        props.setAll(Stream.of(boolProp), null);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void setAllThrowsIfNullProps() {
+        props.setAll(Stream.of(boolProp, null), true);
+    }
+    
+    @Test(expected = NullPointerException.class)
     public void setEmptyThrowsIfNullArg() {
         props.setEmpty(null);
     }
@@ -123,6 +177,16 @@ public class JPropsTest {
     @Test(expected = NullPointerException.class)
     public void removeThrowsIfNullArg() {
         props.remove(null);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void removeAllThrowsIfNullArg() {
+        props.removeAll(null);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void removeAllThrowsIfNullProps() {
+        props.removeAll(Stream.of(boolProp, null));
     }
     
 }
