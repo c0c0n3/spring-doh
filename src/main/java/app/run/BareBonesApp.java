@@ -31,8 +31,8 @@ public class BareBonesApp extends AbstractCliApp {
     @Override
     protected TripsterSpotter<String> spotter() {
         List<Tripster<String>> happyBunch = asList(
-            TripsterConfigMapper.newWithStringArray()
-                                .defaultFromConfig(new HardCodedTripsters()));
+            TripsterConfigMapper.newWithStringArray(new HardCodedTripsters())
+                                .defaultReadConfig());
 
         return new TripsterSpotter<>(new TripsterGroup<>(happyBunch),
                                      new StdoutVisualizer<>());

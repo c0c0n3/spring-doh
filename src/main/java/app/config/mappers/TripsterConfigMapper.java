@@ -4,7 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.function.Function;
 
-import util.config.ConfigItemMapper;
+import util.config.ConfigReader;
 import util.config.ConfigProvider;
 import app.config.items.TripsterConfig;
 import app.core.cyclic.ArrayCycle;
@@ -15,15 +15,16 @@ import app.core.trips.Tripster;
  * Maps configured {@link TripsterConfig}'s to {@link Tripster}'s.
  */
 public class TripsterConfigMapper<T> 
-    extends ConfigItemMapper<TripsterConfig, Tripster<T>>{
+    extends ConfigReader<TripsterConfig, Tripster<T>>{
     
     /**
      * Opinionated constructor utility.
      * Keeps config data as strings and uses an {@link ArrayCycle}.
-     * @see #fromConfig(ConfigProvider)
      */
-    public static TripsterConfigMapper<String> newWithStringArray() {
+    public static TripsterConfigMapper<String> newWithStringArray(
+            ConfigProvider<TripsterConfig> configSource) {
         return new TripsterConfigMapper<>(
+                    configSource,
                     entry -> new ArrayCycle<>(entry.getCycle()));
     }
     
@@ -31,12 +32,15 @@ public class TripsterConfigMapper<T>
     
     /**
      * Creates a new mapper.
+     * @param configSource reads in the raw tripster config items.
      * @param toCycle extracts a {@link Cycle} out of a config entry.
      * @throws NullPointerException if any argument is {@code null}.
      */
-    public TripsterConfigMapper(Function<TripsterConfig, Cycle<T>> toCycle) {
+    public TripsterConfigMapper(
+            ConfigProvider<TripsterConfig> configSource,
+            Function<TripsterConfig, Cycle<T>> toCycle) {
+        super(configSource);
         requireNonNull(toCycle, "toCycle");
-        
         this.toCycle = toCycle;
     }
     

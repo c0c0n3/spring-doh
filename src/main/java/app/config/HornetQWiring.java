@@ -78,8 +78,8 @@ public class HornetQWiring {
     @Bean
     public TripsterSpotter<String> tripsterSpotterWithStdoutViz() {
         List<Tripster<String>> happyBunch = asList(
-                TripsterConfigMapper.newWithStringArray()
-                                    .defaultFromConfig(tripsties));
+                TripsterConfigMapper.newWithStringArray(tripsties)
+                                    .defaultReadConfig());
         
         return new TripsterSpotter<>(new TripsterGroup<>(happyBunch),
                                      new StdoutVisualizer<>());
