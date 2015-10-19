@@ -12,7 +12,11 @@ public class SpringBootConfigProps {
     public static final String ManagementPrefix = "management";
     public static final String SecurityPrefix = "security";
     public static final String JmxPrefix = "jmx";
-
+    public static final String AppInfoPrefix = "info.app";
+    public static final String LogFileKey = "logging.file";
+    public static final String LogLevelPrefix = "logging.level";
+    
+    
     public static 
     JPropAccessor<String> endpointId(ActuatorEndPointName which) {
         return JPropAccessor.makeString(
@@ -102,4 +106,32 @@ public class SpringBootConfigProps {
         return JPropAccessor.makeBool(key("spring", JmxPrefix, "enabled"));
     }
 
+    public static JPropAccessor<String> appName() {
+        return JPropAccessor.makeString(key(AppInfoPrefix, "name"));
+    }
+    
+    public static JPropAccessor<String> appDescription() {
+        return JPropAccessor.makeString(key(AppInfoPrefix, "description"));
+    }
+
+    public static JPropAccessor<String> appVersion() {
+        return JPropAccessor.makeString(key(AppInfoPrefix, "version"));
+    }
+    
+    public static JPropAccessor<String> logFilePathName() {
+        return JPropAccessor.makeString(key(LogFileKey));
+    }
+    
+    public static JPropAccessor<LogLevel> logLevel(String packageName) {
+        return new JPropAccessor<>(
+                key(LogLevelPrefix, packageName), 
+                LogLevel::valueOf, 
+                LogLevel::name);
+    }
+    // TODO can this be generalized to any enum?
+    
+    public static JPropAccessor<LogLevel> rootLogLevel() {
+        return logLevel("ROOT");
+    }
+    
 }
