@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -254,6 +255,19 @@ public class Streams {
      */
     public static <T> Stream<T> asStream(List<T> xs) {
         return xs == null ? Stream.empty() : xs.stream();
+    }
+    
+    /**
+     * Puts an optional value into a stream.
+     * If the given value is {@code null} or an empty optional, then the empty
+     * stream is returned; otherwise a stream containing the optional value.
+     * @param maybeValue the value to convert, possibly {@code null}.
+     * @return an empty stream or a stream with the optional value as the case
+     * may be.
+     */
+    public static <T> Stream<T> asStream(Optional<T> maybeValue) {
+        return maybeValue != null && maybeValue.isPresent() ?
+                Stream.of(maybeValue.get()) : Stream.empty();
     }
     
     /**
