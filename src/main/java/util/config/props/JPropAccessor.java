@@ -7,6 +7,10 @@ import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import util.config.ConfigProvider;
+import util.config.ConfigReader;
+import util.config.SingleStringItemConfigProvider;
+
 
 /**
  * Provides access to a typed property in a Java {@link Properties} store.
@@ -128,9 +132,10 @@ public class JPropAccessor<T> implements JPropGetter<T>, JPropSetter<T> {
     @Override
     public Optional<T> get(Properties db) {
         requireNonNull(db, "db");
-        return Optional.ofNullable(db.getProperty(key()))
-                       .filter(value -> value != "")
-                       .map(fromString);
+        
+        return makeConfigReader(db::getProperty)
+               .defaultReadConfig()
+               .findFirst();
     }
     
     /**
@@ -149,6 +154,24 @@ public class JPropAccessor<T> implements JPropGetter<T>, JPropSetter<T> {
     public Consumer<Properties> with(T value) {
         requireNonNull(value, "value");  // NB fail early
         return db -> set(db, value);
+    }
+    
+    /**
+     * Creates a configuration provider that reads this property's value using
+     * the given lookup.
+     * @param propLookup given the property key, it returns the corresponding
+     * value (if any) from the underlying property store; it may return {@code
+     * null} or empty to signal that no value was found.
+     * @return a configuration provider to read this property.
+     */
+    public ConfigProvider<T> makeConfigReader(
+            Function<String, String> propLookup) {
+        requireNonNull(propLookup, "propLookup");
+        
+        SingleStringItemConfigProvider source = 
+                new SingleStringItemConfigProvider(
+                        () -> propLookup.apply(key()));
+        return ConfigReader.newReader(source, fromString);
     }
     
 }
