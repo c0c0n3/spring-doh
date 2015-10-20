@@ -1,5 +1,7 @@
 package app.run;
 
+import static app.config.items.SpringBootAdminConfigProps.adminServerUrl;
+
 import java.util.List;
 
 import org.springframework.boot.SpringApplication;
@@ -9,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
 import app.config.Profiles;
-import app.config.items.SpringBootAdminConfig;
 import de.codecentric.boot.admin.config.EnableAdminServer;
 
 
@@ -34,8 +35,10 @@ public class SpringBootAdminServer implements RunnableApp {
     @Bean
     public UndertowEmbeddedServletContainerFactory 
                 embeddedServletContainerFactory(Environment env) {
-        int port = SpringBootAdminConfig
-                  .getAdminServerUrl(k -> env.getProperty(k))
+        int port = adminServerUrl()
+                  .makeConfigReader(env::getProperty)
+                  .defaultReadConfig()
+                  .findFirst()
                   .get()
                   .getPort();
         return new UndertowEmbeddedServletContainerFactory(port);

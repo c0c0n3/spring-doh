@@ -1,7 +1,9 @@
 package util.config.props;
 
 import static java.util.Objects.requireNonNull;
+import static util.Exceptions.unchecked;
 
+import java.net.URI;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -10,6 +12,7 @@ import java.util.function.Function;
 import util.config.ConfigProvider;
 import util.config.ConfigReader;
 import util.config.SingleStringItemConfigProvider;
+import util.lambda.FunctionE;
 
 
 /**
@@ -69,6 +72,39 @@ public class JPropAccessor<T> implements JPropGetter<T>, JPropSetter<T> {
      */
     public static JPropAccessor<Integer> makeInt(JPropKey key) {
         return make(key, Integer::valueOf);
+    }
+    
+    /**
+     * Convenience factory method to create an URI accessor.
+     * String values are read from the property store using URI's {@link 
+     * URI#URI(String) constructor}, whereas URI values are written using URI's 
+     * {@link URI#toASCIIString() toASCIIString} method.
+     * @param key the property key.
+     * @return a new accessor.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static JPropAccessor<URI> makeURI(JPropKey key) {
+        Function<String, URI> fromString = 
+                unchecked((FunctionE<String, URI>) URI::new);
+        return new JPropAccessor<>(key, fromString, URI::toASCIIString);
+    }
+    
+    /**
+     * Convenience factory method to create an enum accessor.
+     * String values are read from the property store using the enum's {@link 
+     * Enum#valueOf(Class, String) valueOf} method, whereas enum values are 
+     * written using the enum's {@link Enum#name() name} method.
+     * @param enumType the the enum type for which to create the accessor.
+     * @param key the property key.
+     * @return a new accessor.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static <T extends Enum<T>> JPropAccessor<T> makeEnum(
+            Class<T> enumType, JPropKey key) {
+        requireNonNull(enumType);
+        
+        Function<String, T> fromString = s -> Enum.valueOf(enumType, s); 
+        return new JPropAccessor<>(key, fromString, Enum::name);
     }
     
     

@@ -1,40 +1,44 @@
 package app.config.data;
 
+import static app.config.items.SpringBootConfigProps.*;
+import static app.config.items.SpringBootAdminConfigProps.*;
+
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Properties;
 import java.util.stream.Stream;
 
 import util.config.ConfigProvider;
+import util.config.props.JProps;
 import app.config.items.LogLevel;
-import app.config.items.SpringBootConfig;
 
 
 /**
  * The data that goes into 'config/application-*.properties'.
  */
 public class SpringBootAppPropsFile 
-    implements ConfigProvider<SpringBootConfig> {
+    implements ConfigProvider<Properties> {
 
     @Override
-    public Stream<SpringBootConfig> readConfig() throws Exception {
+    public Stream<Properties> readConfig() throws Exception {
         String appName = "FullyFledgedApp";
-        SpringBootConfig cfg = new SpringBootConfig(); 
+        JProps cfg = new JProps(new Properties()); 
         
-        cfg.info().setName(appName);
+        cfg.set(appName().with(appName));
         
-        cfg.log().setFileName("app.log")
-                 .setRootLogLevel(LogLevel.INFO);
+        cfg.set(logFilePathName().with("app.log"));
+        cfg.set(rootLogLevel().with(LogLevel.INFO));
         
-        cfg.actuator().setEnabled(true)
-                      .setSensitive(false);
+        cfg.setAll(endpointsEnabled(), true);
+        cfg.setAll(endpointsSensitive(), false);
         
-        cfg.actuator().setJmxDomain(appName)
-                      .setJmxEnabled(true)
-                      .setJmxUniqueNames(true);
+        cfg.set(jmxDomain().with(appName));
+        cfg.set(jmxEnabled().with(true));
+        cfg.set(jmxUniqueNames().with(true));
         
-        cfg.admin().setAdminServerUrl(buildAdminUrl());
+        cfg.set(adminServerUrl().with(buildAdminUrl()));
         
-        return Stream.of(cfg);
+        return Stream.of(cfg.getProps());
     }
     
     private URI buildAdminUrl() throws URISyntaxException {

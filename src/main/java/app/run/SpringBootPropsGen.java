@@ -24,7 +24,6 @@ public class SpringBootPropsGen implements RunnableApp {
             .defaultReadConfig()
             .findFirst()
             .get()
-            .getProps()
             .store(System.out, "Spring Boot Properties");
     }
     

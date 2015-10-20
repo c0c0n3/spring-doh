@@ -5,7 +5,11 @@ import static util.config.props.JPropKey.key;
 import java.util.stream.Stream;
 
 import util.config.props.JPropAccessor;
+import util.config.props.JPropSetter;
 
+/**
+ * Accessors for Spring Boot application properties.
+ */
 public class SpringBootConfigProps {
 
     public static final String EndPointsPrefix = "endpoints";
@@ -30,8 +34,7 @@ public class SpringBootConfigProps {
     }
     
     public static 
-    Stream<JPropAccessor<Boolean>> allEndpointsEnabled(
-                                                ActuatorEndPointName which) {
+    Stream<JPropSetter<Boolean>> endpointsEnabled() {
         return Stream.of(ActuatorEndPointName.values())
                      .map(name -> endpointEnabled(name));
     }
@@ -43,8 +46,7 @@ public class SpringBootConfigProps {
     }
     
     public static 
-    Stream<JPropAccessor<Boolean>> allEndpointsSensitive(
-                                                ActuatorEndPointName which) {
+    Stream<JPropSetter<Boolean>> endpointsSensitive() {
         return Stream.of(ActuatorEndPointName.values())
                      .map(name -> endpointSensitive(name));
     }
@@ -123,12 +125,9 @@ public class SpringBootConfigProps {
     }
     
     public static JPropAccessor<LogLevel> logLevel(String packageName) {
-        return new JPropAccessor<>(
-                key(LogLevelPrefix, packageName), 
-                LogLevel::valueOf, 
-                LogLevel::name);
+        return JPropAccessor.makeEnum(LogLevel.class, 
+                                      key(LogLevelPrefix, packageName)); 
     }
-    // TODO can this be generalized to any enum?
     
     public static JPropAccessor<LogLevel> rootLogLevel() {
         return logLevel("ROOT");
