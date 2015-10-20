@@ -1,5 +1,6 @@
 package util.config;
 
+import static java.util.Objects.requireNonNull;
 import static util.Exceptions.unchecked;
 
 import java.net.URI;
@@ -15,6 +16,37 @@ import util.lambda.FunctionE;
 public class StringConfigReaderFactory {
 
     /**
+     * @return the parser used to create boolean configuration readers.
+     */
+    public static Function<String, Boolean> boolParser() {
+        return Boolean::valueOf;
+    }
+    
+    /**
+     * @return the parser used to create integer configuration readers.
+     */
+    public static Function<String, Integer> intParser() {
+        return Integer::valueOf;
+    }
+    
+    /**
+     * @return the parser used to create URI configuration readers.
+     */
+    public static Function<String, URI> uriParser() {
+        return unchecked((FunctionE<String, URI>) URI::new);
+    }
+    
+    /**
+     * @return the parser used to create enum configuration readers.
+     */
+    public static 
+    <T extends Enum<T>> Function<String, T> enumParser(Class<T> enumType) {
+        requireNonNull(enumType);
+        
+        return s -> Enum.valueOf(enumType, s); 
+    }
+    
+    /**
      * Creates a boolean configuration reader.
      * String values are read from the provided source configuration store 
      * using Boolean's {@link Boolean#valueOf(String) valueOf} method.
@@ -24,7 +56,7 @@ public class StringConfigReaderFactory {
      */
     public static 
     ConfigProvider<Boolean> makeBool(ConfigProvider<String> configSource) {
-        return ConfigReader.newReader(configSource, Boolean::valueOf);
+        return ConfigReader.newReader(configSource, boolParser());
     }
     
     /**
@@ -37,7 +69,7 @@ public class StringConfigReaderFactory {
      */
     public static 
     ConfigProvider<Integer> makeInt(ConfigProvider<String> configSource) {
-        return ConfigReader.newReader(configSource, Integer::valueOf);
+        return ConfigReader.newReader(configSource, intParser());
     }
     
     /**
@@ -50,9 +82,21 @@ public class StringConfigReaderFactory {
      */
     public static 
     ConfigProvider<URI> makeURI(ConfigProvider<String> configSource) {
-        Function<String, URI> fromString = 
-                unchecked((FunctionE<String, URI>) URI::new);
-        return ConfigReader.newReader(configSource, fromString);
+        return ConfigReader.newReader(configSource, uriParser());
+    }
+
+    /**
+     * Creates an enum configuration reader.
+     * String values are read from the provided source configuration store 
+     * using the enum's {@link Enum#valueOf(Class, String) valueOf} method.
+     * @param enumType the the enum type for which to create the reader.
+     * @param configSource reads string items from configuration.
+     * @return a configuration provider to read enum items.
+     * @throws NullPointerException if any argument is {@code null}.
+     */
+    public static <T extends Enum<T>> ConfigProvider<T> makeEnum(
+            Class<T> enumType, ConfigProvider<String> configSource) {
+        return ConfigReader.newReader(configSource, enumParser(enumType));
     }
     
 }

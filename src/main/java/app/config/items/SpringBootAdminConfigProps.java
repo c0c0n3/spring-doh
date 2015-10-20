@@ -1,5 +1,6 @@
 package app.config.items;
 
+import static util.config.props.JPropAccessorFactory.makeURI;
 import static util.config.props.JPropKey.key;
 
 import java.net.URI;
@@ -15,7 +16,7 @@ public class SpringBootAdminConfigProps {
     public static final String SpringBootAdminPrefix = "spring.boot.admin";
    
     public static JPropAccessor<URI> adminServerUrl() {
-        return JPropAccessor.makeURI(key(SpringBootAdminPrefix, "url"));
+        return makeURI(key(SpringBootAdminPrefix, "url"));
     }
     
 }

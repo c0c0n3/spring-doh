@@ -4,8 +4,12 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import static util.Arrayz.array;
 import static util.config.props.JPropKey.key;
+import static util.config.props.JPropAccessorFactory.makeBool;
+import static util.config.props.JPropAccessorFactory.makeString;
+import static util.config.props.JPropAccessorFactory.makeURI;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Stream;
@@ -20,10 +24,8 @@ import org.junit.runner.RunWith;
 @RunWith(Theories.class)
 public class JPropsTest {
 
-    private static JPropAccessor<Boolean> boolProp = 
-            JPropAccessor.makeBool(key("p1"));
-    private static JPropAccessor<URI> uriProp = 
-            new JPropAccessor<>(key("p2"), URI::create, URI::toASCIIString);
+    private static JPropAccessor<Boolean> boolProp = makeBool(key("p1"));
+    private static JPropAccessor<URI> uriProp = makeURI(key("p2"));
     
     private static JProps emptyProps() {
         return new JProps(new Properties());
@@ -98,7 +100,7 @@ public class JPropsTest {
         assertFalse(lookupValue.isPresent());
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = URISyntaxException.class)
     public void throwRuntimeExceptionIfFailsToConvertToObject() {
         props.getProps().setProperty(uriProp.getKey().get(), "   ");
         props.get(uriProp);
@@ -118,8 +120,8 @@ public class JPropsTest {
     
     @Test
     public void setAllWritesSameValueForAllListedProps() {
-        JPropAccessor<String> s1 = JPropAccessor.makeString(key("s1"));
-        JPropAccessor<String> s2 = JPropAccessor.makeString(key("s2"));                      
+        JPropAccessor<String> s1 = makeString(key("s1"));
+        JPropAccessor<String> s2 = makeString(key("s2"));                      
         
         String value = "same";
         props.setAll(Stream.of(s1, s2), value);
@@ -137,8 +139,8 @@ public class JPropsTest {
     
     @Test
     public void removeAllOnlyDeletesListedProps() {
-        JPropAccessor<String> s1 = JPropAccessor.makeString(key("s1"));
-        JPropAccessor<String> s2 = JPropAccessor.makeString(key("s2"));                      
+        JPropAccessor<String> s1 = makeString(key("s1"));
+        JPropAccessor<String> s2 = makeString(key("s2"));                      
         
         props.setAll(Stream.of(s1, s2), "same");
         props.set(boolProp, true);

@@ -1,5 +1,9 @@
 package app.config.items;
 
+import static util.config.props.JPropAccessorFactory.makeBool;
+import static util.config.props.JPropAccessorFactory.makeEnum;
+import static util.config.props.JPropAccessorFactory.makeInt;
+import static util.config.props.JPropAccessorFactory.makeString;
 import static util.config.props.JPropKey.key;
 
 import java.util.stream.Stream;
@@ -23,14 +27,12 @@ public class SpringBootConfigProps {
     
     public static 
     JPropAccessor<String> endpointId(ActuatorEndPointName which) {
-        return JPropAccessor.makeString(
-                key(EndPointsPrefix, which.name(), "id"));
+        return makeString(key(EndPointsPrefix, which.name(), "id"));
     }
     
     public static 
     JPropAccessor<Boolean> endpointEnabled(ActuatorEndPointName which) {
-        return JPropAccessor.makeBool(
-                key(EndPointsPrefix, which.name(), "enabled"));
+        return makeBool(key(EndPointsPrefix, which.name(), "enabled"));
     }
     
     public static 
@@ -41,8 +43,7 @@ public class SpringBootConfigProps {
     
     public static 
     JPropAccessor<Boolean> endpointSensitive(ActuatorEndPointName which) {
-        return JPropAccessor.makeBool(
-                key(EndPointsPrefix, which.name(), "sensitive"));
+        return makeBool(key(EndPointsPrefix, which.name(), "sensitive"));
     }
     
     public static 
@@ -52,7 +53,7 @@ public class SpringBootConfigProps {
     }
     
     public static JPropAccessor<String> managementAddress() {
-        return JPropAccessor.makeString(key(ManagementPrefix, "address"));
+        return makeString(key(ManagementPrefix, "address"));
     }
     /* NB: quoting Spring Boot manual
      * useful if you want to listen only on an internal or ops-facing network, 
@@ -60,18 +61,17 @@ public class SpringBootConfigProps {
      */
     
     public static JPropAccessor<Integer> managementPort() {
-        return JPropAccessor.makeInt(key(ManagementPrefix, "port"));
+        return makeInt(key(ManagementPrefix, "port"));
     }
     // NB -1 will disable HTTP
 
     public static JPropAccessor<String> managementContextPath() {
-        return JPropAccessor.makeString(key(ManagementPrefix, "context-path"));
+        return makeString(key(ManagementPrefix, "context-path"));
     }
     // NB should be absolute path
     
     public static JPropAccessor<Boolean> securityEnabled() {
-        return JPropAccessor.makeBool(
-                key(ManagementPrefix, SecurityPrefix, "enabled"));
+        return makeBool(key(ManagementPrefix, SecurityPrefix, "enabled"));
     }
     /* NB: quoting Spring Boot manual
      * If you don’t have Spring Security on the classpath then there is no need 
@@ -80,53 +80,49 @@ public class SpringBootConfigProps {
      */
     
     public static JPropAccessor<String> adminUserName() {
-        return JPropAccessor.makeString(key(SecurityPrefix, "user.name"));
+        return makeString(key(SecurityPrefix, "user.name"));
     }
     
     public static JPropAccessor<String> adminPassword() {
-        return JPropAccessor.makeString(key(SecurityPrefix, "user.password"));
+        return makeString(key(SecurityPrefix, "user.password"));
     }
     
     public static JPropAccessor<String> securityRole() {
-        return JPropAccessor.makeString(
-                key(ManagementPrefix, SecurityPrefix, "role"));
+        return makeString(key(ManagementPrefix, SecurityPrefix, "role"));
     }
     
     public static JPropAccessor<String> jmxDomain() {
-        return JPropAccessor.makeString(
-                key(EndPointsPrefix, JmxPrefix, "domain"));
+        return makeString(key(EndPointsPrefix, JmxPrefix, "domain"));
     }
     // value is the name of the domain under which to expose end points
     
     public static JPropAccessor<Boolean> jmxUniqueNames() {
-        return JPropAccessor.makeBool(
-                key(EndPointsPrefix, JmxPrefix, "uniqueNames"));
+        return makeBool(key(EndPointsPrefix, JmxPrefix, "uniqueNames"));
     }
     // value specifies whether to enforce unique bean names in JMX
     
     public static JPropAccessor<Boolean> jmxEnabled() {
-        return JPropAccessor.makeBool(key("spring", JmxPrefix, "enabled"));
+        return makeBool(key("spring", JmxPrefix, "enabled"));
     }
 
     public static JPropAccessor<String> appName() {
-        return JPropAccessor.makeString(key(AppInfoPrefix, "name"));
+        return makeString(key(AppInfoPrefix, "name"));
     }
     
     public static JPropAccessor<String> appDescription() {
-        return JPropAccessor.makeString(key(AppInfoPrefix, "description"));
+        return makeString(key(AppInfoPrefix, "description"));
     }
 
     public static JPropAccessor<String> appVersion() {
-        return JPropAccessor.makeString(key(AppInfoPrefix, "version"));
+        return makeString(key(AppInfoPrefix, "version"));
     }
     
     public static JPropAccessor<String> logFilePathName() {
-        return JPropAccessor.makeString(key(LogFileKey));
+        return makeString(key(LogFileKey));
     }
     
     public static JPropAccessor<LogLevel> logLevel(String packageName) {
-        return JPropAccessor.makeEnum(LogLevel.class, 
-                                      key(LogLevelPrefix, packageName)); 
+        return makeEnum(LogLevel.class, key(LogLevelPrefix, packageName)); 
     }
     
     public static JPropAccessor<LogLevel> rootLogLevel() {
