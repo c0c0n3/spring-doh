@@ -38,9 +38,9 @@ theories), [Hamcrest][hamcrest], [Mockito][mockito], and all the Spring testing
 goodies such as Mock MVC. Shake well and drink irresponsibly; recommended for
 sundowners.
 
-The code in `app.util` is some general-purpose stuff I ended up writing myself
-as I went along because my Google searches for better options failed me. Grab
-if you think it could be any useful to you too.
+The code in `util` is some general-purpose stuff I ended up writing myself as I
+went along because my Google searches for better options failed me. Grab if you
+think it could be any useful to you too.
 
 All the code in this repository is Java 8 with heavy use of Java's very own
 flavour of streams and dysfunctional programming. 
